@@ -30,3 +30,35 @@ Troubleshooting
 Smoke test (optional, ~1 min): `python engine/new_project.py smoke`, then
 `python engine/render.py projects/smoke snap projects/smoke/review/s 1 5 11`, look at one PNG, then delete `projects/smoke`
 (it is yours, created just now).
+
+---
+
+## Restricted / offline machine (no apt, no browser CDN)
+
+Some sandboxes only allow `pypi.org`, `registry.npmjs.org` and `codeload.github.com`. There:
+`sudo apt-get install ffmpeg` fails (no debian mirror), `python -m playwright install chromium` dies on
+`cdn.playwright.dev`, and openai-whisper cannot fetch its `.pt` model from `openaipublic.azureedge.net`.
+Use the offline installer instead (idempotent, safe to re-run, ends by running doctor):
+
+```
+bash setup/setup-offline.sh
+python3 engine/doctor.py          # must print READY
+```
+
+What it does, and why each piece is safe:
+
+| Need | Offline route | Notes |
+|---|---|---|
+| ffmpeg + ffprobe | npm `@ffmpeg-installer/linux-x64`, `@ffprobe-installer/linux-x64` → `/usr/local/bin` | static builds, no libs needed |
+| Chromium for playwright | npm `@sparticuz/chromium` (headless shell) → `/opt/chrome153`, symlinked to every path playwright looks at; nss libs → `/usr/local/lib` + `ldconfig` | Chromium **153** vs the **159** this playwright expects — rendering is verified end-to-end; re-run the smoke test after a playwright upgrade |
+| whisper | `whisper small` (int8 CTranslate2, 4 npm parts, sha256 checked) → `~/.cache/whisper-ct2/small` | `engine/transcribe.py` tries openai-whisper first and falls back to this dir with faster-whisper when the download fails. `--model base` etc. only uses openai-whisper |
+| fonts | Inter (stands in for `Segoe UI`), Gelasio (Georgia metric twin) + aliases in `/etc/fonts/local.conf` | templates keep asking for the real font names, no template edits |
+
+Caveats worth telling the user once:
+- No apt, so no system font package: Devanagari/emoji glyphs are missing. The kit writes Hinglish in Latin
+  letters anyway (`hi` + Latin script); if a reel needs Devanagari on screen, install that font first
+  (e.g. `npm i @fontsource/noto-sans-devanagari`, convert the woff2 to ttf, drop it in
+  `/usr/share/fonts/truetype/mukku/`).
+- CPU-only: a 18 s reel takes ~5 min to render (546 frames through playwright). Whisper `small` int8
+  transcribes ~17 s of speech in ~10 s.
+- Nothing outside the repo is captured in a snapshot — after a fresh boot re-run `bash setup/setup-offline.sh`.

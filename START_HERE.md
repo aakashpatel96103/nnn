@@ -12,6 +12,9 @@ ffmpeg, Node. Agar wo bole "naya terminal kholo" to kholo aur fir se `setup` bol
 Last me **READY** dikhna chahiye.
 
 > Python 3.10+ pehle se chahiye. Nahi hai to: Windows → `winget install Python.Python.3.12`, Mac → `brew install python`.
+>
+> **Restricted machine** (apt/internet band, sirf pypi/npm khula ho): `bash setup/setup-offline.sh` chalao —
+> usme ffmpeg, Chromium, whisper model aur fonts sab offline route se aa jate hain. Detail: `playbook/01-setup.md`.
 
 ## Step 3 — reel maango (inme se kuch bhi do)
 

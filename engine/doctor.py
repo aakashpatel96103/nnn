@@ -84,6 +84,8 @@ def main():
         hint = {"Windows": "winget install --id Gyan.FFmpeg -e" if t != "node" else "winget install --id OpenJS.NodeJS.LTS -e",
                 "Darwin": "brew install ffmpeg" if t != "node" else "brew install node",
                 "Linux": "sudo apt-get install -y ffmpeg" if t != "node" else "sudo apt-get install -y nodejs"}.get(osname, "")
+        if osname == "Linux":
+            hint += "   (no apt / offline box: bash setup/setup-offline.sh)"
         if install and hint:
             print(f"MISS {t} - running: {hint}")
             subprocess.run(hint, shell=True)

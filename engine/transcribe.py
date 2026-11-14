@@ -15,7 +15,7 @@ If there is no script, whisper words are used as-is (line = sentence index).
 Alignment: difflib over normalized tokens; script words with no whisper match get interpolated times.
 After running, ALWAYS spot-check 3-4 words against the audio (render snaps at their .s times).
 """
-import argparse, difflib, json, re, sys
+import argparse, difflib, json, os, re, sys
 from pathlib import Path
 
 
@@ -28,7 +28,7 @@ def norm(w: str) -> str:
     return w
 
 
-def load_whisper_words(audio: Path, lang: str, model_name: str, prompt: str):
+def _openai_words(audio: Path, lang: str, model_name: str, prompt: str):
     import whisper  # openai-whisper
     model = whisper.load_model(model_name)
     res = model.transcribe(str(audio), language=lang, word_timestamps=True,
@@ -40,6 +40,35 @@ def load_whisper_words(audio: Path, lang: str, model_name: str, prompt: str):
             if t:
                 out.append({"w": t, "s": round(float(w["start"]), 3), "e": round(float(w["end"]), 3)})
     return out
+
+
+def _faster_words(audio: Path, lang: str, model_dir: str, prompt: str):
+    from faster_whisper import WhisperModel
+    model = WhisperModel(model_dir, device="cpu", compute_type="int8")
+    segments, _info = model.transcribe(str(audio), language=lang, word_timestamps=True,
+                                       initial_prompt=prompt[:800] if prompt else None,
+                                       vad_filter=False, beam_size=5)
+    out = []
+    for seg in segments:
+        for w in (seg.words or []):
+            t = w.word.strip()
+            if t:
+                out.append({"w": t, "s": round(float(w.start), 3), "e": round(float(w.end), 3)})
+    return out
+
+
+def load_whisper_words(audio: Path, lang: str, model_name: str, prompt: str):
+    """openai-whisper first (downloads its .pt model on first use). If that model cannot be
+    fetched (offline box), fall back to a local CTranslate2 model dir used by faster-whisper:
+    $MUKKU_WHISPER_CT2, else ~/.cache/whisper-ct2/<model_name>. Output shape is identical."""
+    ct2 = Path(os.environ.get("MUKKU_WHISPER_CT2") or Path.home() / ".cache" / "whisper-ct2" / model_name)
+    if not ct2.exists():
+        return _openai_words(audio, lang, model_name, prompt)
+    try:
+        return _openai_words(audio, lang, model_name, prompt)
+    except Exception as e:  # model download blocked / no network
+        print(f"openai-whisper unusable ({type(e).__name__}) -> local faster-whisper model {ct2}")
+        return _faster_words(audio, lang, str(ct2), prompt)
 
 
 def align(script_lines, raw):

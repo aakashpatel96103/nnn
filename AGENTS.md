@@ -56,6 +56,11 @@ Run `python engine/doctor.py --install`. If ffmpeg/node were installed by winget
 open a new terminal (PATH refresh) and run doctor again. Done when it prints **READY**.
 Details: `playbook/01-setup.md`.
 
+**Restricted box** (no apt, no `cdn.playwright.dev`, no GitHub release assets — e.g. this sandbox):
+`python engine/doctor.py --install` cannot fix itself there. Run `bash setup/setup-offline.sh` instead
+(pip packages, static ffmpeg+ffprobe, a Chromium headless shell for playwright, the whisper model and
+fonts), then `python3 engine/doctor.py` must print **READY**. Same report-only doctor still works.
+
 ### Phase 2 — Intake (what did the user give?)
 Create the project, put every file the user gave into `inputs/`, run `ingest.py`, read `review/ingest.json`.
 Then classify the request:
@@ -90,6 +95,8 @@ Keep their words. Suggest (don't force) a stronger hook/CTA if weak. Save to `in
   (`playbook/04-voice.md`). Save as `inputs/vo.mp3` (or .m4a/.wav).
 - Only if the user says yes to AI voice: `engine/tts.py`.
 - Then `engine/transcribe.py`. Check the printed match ratio (≥ 80% good; < 60% → fix script/audio, ask).
+  On an offline box it prints `openai-whisper unusable (URLError) -> local faster-whisper model` and uses
+  `~/.cache/whisper-ct2/small` (installed by `setup/setup-offline.sh`) — that is fine, timings are word-level.
 - Set `project.json` `duration` = suggested duration printed by transcribe (voice end + ~0.6 s; + end card time
   if the end card comes after the voice; typical 15–30 s).
 
