@@ -1,0 +1,4 @@
+Claude ke saare AI models main FREE mein use karta hoon, aur tum bhi kar sakte ho!
+Bas ek API key chahiye aur tum bhi Claude ke different models ko access kar sakte ho!
+Agar tum bhi ye setup karna chahte ho, toh main tumhe API key aur complete setup guide share kar dunga!
+Toh comment karo "CLAUDE" aur main tumhe API key ka link DM kar dunga!

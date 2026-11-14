@@ -1,0 +1,150 @@
+{
+  "fps": 30,
+  "total": 45.6,
+  "cues": [
+    {
+      "frame": 0,
+      "sound": "curated/hook-impact.wav",
+      "gain": -6,
+      "label": "hook"
+    },
+    {
+      "frame": 158,
+      "sound": "tick.wav",
+      "gain": -8,
+      "label": "model list selection"
+    },
+    {
+      "frame": 214,
+      "sound": "tick.wav",
+      "gain": -8,
+      "label": "model list selection"
+    },
+    {
+      "frame": 309,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "sign up press"
+    },
+    {
+      "frame": 376,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "Model API press"
+    },
+    {
+      "frame": 392,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "New key press"
+    },
+    {
+      "frame": 441,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "masked key copy"
+    },
+    {
+      "frame": 479,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "base URL copy"
+    },
+    {
+      "frame": 581,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "Help press"
+    },
+    {
+      "frame": 604,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "Troubleshooting press"
+    },
+    {
+      "frame": 628,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "Developer Mode toggle"
+    },
+    {
+      "frame": 733,
+      "sound": "curated/zoom-swish.wav",
+      "gain": -6,
+      "label": "restart transition"
+    },
+    {
+      "frame": 791,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "Developer option press"
+    },
+    {
+      "frame": 857,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "Configure Third-Party press"
+    },
+    {
+      "frame": 929,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "Static API Key select"
+    },
+    {
+      "frame": 983,
+      "sound": "typing-tick.wav",
+      "gain": -13,
+      "label": "Base URL entry"
+    },
+    {
+      "frame": 1013,
+      "sound": "typing-tick.wav",
+      "gain": -13,
+      "label": "masked API key entry"
+    },
+    {
+      "frame": 1058,
+      "sound": "thock.wav",
+      "gain": -5,
+      "label": "Save press"
+    },
+    {
+      "frame": 1143,
+      "sound": "curated/zoom-swish.wav",
+      "gain": -6,
+      "label": "ready proof transition"
+    },
+    {
+      "frame": 1251,
+      "sound": "curated/ui-pop.wav",
+      "gain": -7,
+      "label": "comment field focus"
+    },
+    {
+      "frame": 1278,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "comment submit"
+    },
+    {
+      "frame": 1316,
+      "sound": "thock.wav",
+      "gain": -7,
+      "label": "DM card arrival"
+    },
+    {
+      "frame": 1324,
+      "sound": "clean-ding.wav",
+      "gain": -5,
+      "label": "DM sent stamp"
+    },
+    {
+      "frame": 1348,
+      "sound": "curated/ui-click.wav",
+      "gain": -5,
+      "label": "follow press"
+    }
+  ]
+}

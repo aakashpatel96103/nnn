@@ -1,0 +1,33 @@
+[
+ {
+  "file": "rec-144101.mp4",
+  "kind": "video",
+  "duration": 21.3333,
+  "frames": "assets\\rec-144101_frames",
+  "sheet": "review/ingest_rec-144101.jpg"
+ },
+ {
+  "file": "rec-145105.mp4",
+  "kind": "video",
+  "duration": 6.6,
+  "frames": "assets\\rec-145105_frames",
+  "sheet": "review/ingest_rec-145105.jpg"
+ },
+ {
+  "file": "script.txt",
+  "kind": "text",
+  "chars": 767
+ },
+ {
+  "file": "vo.mp3",
+  "kind": "audio",
+  "duration": 45.244063
+ },
+ {
+  "file": "website-step.mp4",
+  "kind": "video",
+  "duration": 62.833333,
+  "frames": "assets\\website-step_frames",
+  "sheet": "review/ingest_website-step.jpg"
+ }
+]

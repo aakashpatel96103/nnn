@@ -1,0 +1,302 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!--
+  MUKKU REEL TEMPLATE  (1080x1920, 30fps; window.render(t) MUST be a pure function of time)
+  - __WORDS__ and __DUR__ are filled by engine/render.py from src/words.json and project.json.
+  - Edit ONLY the CONFIG block and the per-scene parts (SCENE BODIES html + SCENE_FX functions).
+  - The rest (camera, chrome, captions, cursor, stickers, wipe, end card) is the house style - keep it.
+  - QA hooks: data-qa-text = a text block checked for overlaps; data-qa-chrome = top bar (allowed outside safe area);
+    data-qa-ignore = decorative, skip in QA.
+  - Example scene bodies below are PLACEHOLDERS: replace them with UI rebuilt from the user's screenshots/recordings.
+-->
+<style>
+:root{
+  --bg:#F6F3EE; --ink:#141414; --mute:#8a857c; --clay:#D97757; --clayD:#B85A3A;
+  --green:#22A35A; --line:#E4DED3; --card:#FFFFFF; --hl:#FFD9C7; --blue:#3897F0;
+  --sans:"Segoe UI", Arial, sans-serif; --serif:Georgia, "Times New Roman", serif; --mono:"Cascadia Mono", Consolas, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+body{font-family:var(--sans);color:var(--ink);position:relative}
+.abs{position:absolute}
+#grid{position:absolute;inset:0;background-image:linear-gradient(rgba(20,20,20,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(20,20,20,.045) 1px,transparent 1px);background-size:54px 54px}
+.glow{position:absolute;border-radius:50%;filter:blur(90px)}
+#world{position:absolute;inset:0;transform-origin:540px 700px}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 80% at 50% 42%,rgba(0,0,0,0) 55%,rgba(70,35,15,.10) 100%)}
+
+/* top bar (chrome) */
+#crumb{left:72px;top:92px;font:600 24px var(--mono);letter-spacing:1px;color:var(--mute)}
+#count{right:72px;top:92px;font:600 24px var(--mono);color:var(--ink)}
+#pbar{left:72px;top:138px;width:936px;height:6px;background:rgba(20,20,20,.08);border-radius:3px;overflow:hidden}
+#pfill{height:100%;width:0;background:var(--clay)}
+
+/* headline: bold sans + italic serif accent + highlighter swipe */
+.head{left:0;width:1080px;top:262px;text-align:center;font-weight:700;letter-spacing:-2px;line-height:1.06;opacity:0}
+.head .l{display:block}
+.head i{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--clay);letter-spacing:-1px}
+.hl{position:relative;display:inline-block;z-index:0}
+.hl::before{content:"";position:absolute;left:-10px;right:-10px;bottom:6px;height:38%;background:var(--hl);z-index:-1;transform-origin:left center;transform:scaleX(var(--s,0));border-radius:6px}
+
+/* generic UI card (rebuild real UI inside these) */
+.card{background:#fff;border:2px solid var(--line);border-radius:28px;box-shadow:0 30px 70px rgba(0,0,0,.12);padding:30px 36px;opacity:0}
+.card.dark{background:#1E1E1D;border-color:#000;color:#EDEDED;box-shadow:0 30px 70px rgba(0,0,0,.28)}
+.card .ct{font:800 40px var(--sans);letter-spacing:-1px}
+.card .cs{font:600 20px var(--mono);color:var(--mute);letter-spacing:1px;margin-top:4px}
+.label{font:600 22px var(--mono);color:var(--mute);letter-spacing:1px}
+
+/* stickers */
+.stk{font:800 30px var(--sans);background:#fff;border:3px solid var(--ink);padding:10px 20px;border-radius:12px;box-shadow:5px 5px 0 var(--ink);white-space:nowrap;opacity:0}
+.stk.g{background:#E3F7EA;border-color:var(--green);color:#14773D;box-shadow:5px 5px 0 var(--green)}
+.stk.o{background:var(--clay);color:#fff;border-color:var(--ink)}
+.pill{font:800 22px var(--mono);color:#fff;background:var(--green);padding:8px 16px;border-radius:999px;display:flex;gap:8px;align-items:center;opacity:0}
+
+/* checklist rows */
+.step{position:relative;height:84px;display:flex;align-items:center;font:600 33px var(--sans)}
+.step .num{width:50px;height:50px;border-radius:50%;background:#F2EEE7;font:800 24px var(--mono);display:flex;align-items:center;justify-content:center;margin-right:22px;flex:none}
+.step .ck{position:absolute;right:0;top:17px;width:50px;height:50px;border-radius:50%;border:3px solid #DDD6CB;background:#fff;display:flex;align-items:center;justify-content:center}
+
+/* comment-to-DM end scene */
+#field{flex:1;height:72px;border:2px solid #E6E1D8;border-radius:999px;display:flex;align-items:center;padding:0 24px;font:700 34px var(--sans);color:var(--ink)}
+#field .ph{color:#aaa;font-weight:500}
+#post{font:800 30px var(--sans);color:var(--blue)}
+
+/* wipe canvas */
+#wipe{position:absolute;inset:0;pointer-events:none}
+
+/* captions: word-synced pill */
+#cap{left:160px;width:760px;top:1236px;text-align:center}
+#capin{display:inline-block;background:#fff;border-radius:22px;padding:14px 28px;box-shadow:0 10px 30px rgba(0,0,0,.10),0 0 0 2px rgba(20,20,20,.06);font:800 60px var(--sans);letter-spacing:-.5px;line-height:1.14;opacity:0}
+#capin span{display:inline-block;color:#C9C3B9}
+#capin span.on{color:var(--ink)}
+
+/* end card: avatar + handle + Follow */
+#pres{left:240px;top:1384px;width:150px;height:150px;border-radius:50%;box-shadow:0 14px 32px rgba(0,0,0,.16);border:5px solid #fff;opacity:0;overflow:hidden;background:#fff}
+#pres img{width:100%;height:100%;object-fit:cover}
+#handle{left:408px;top:1425px;opacity:0;display:flex;align-items:center;gap:16px;background:#fff;border-radius:999px;padding:12px 14px 12px 26px;box-shadow:0 10px 26px rgba(0,0,0,.10),0 0 0 2px rgba(20,20,20,.06)}
+#handle .h{font:800 32px var(--sans)}
+#follow{font:800 24px var(--sans);color:#fff;background:var(--blue);padding:10px 22px;border-radius:12px}
+#cursor{left:0;top:0;z-index:50;opacity:0}
+</style></head>
+<body>
+<div id="grid" data-qa-ignore></div>
+<div class="glow" id="g1" data-qa-ignore style="width:900px;height:700px;background:#FFC7AE;opacity:.55"></div>
+<div class="glow" id="g2" data-qa-ignore style="width:700px;height:600px;background:#FFE3B0;opacity:.5"></div>
+
+<div id="world">
+  <!-- ===== SCENE HEADLINES (one per scene; id h0,h1,...; highlighter span id hl0,hl1,...) ===== -->
+  <div class="abs head" id="h0" data-qa-text style="font-size:92px"><span class="l">Ye <span class="hl" id="hl0">hook line</span></span><span class="l"><i>yahan aayegi.</i></span></div>
+  <div class="abs head" id="h1" data-qa-text style="font-size:96px"><span class="l">Scene <i>two</i></span><span class="l"><span class="hl" id="hl1">headline</span></span></div>
+  <div class="abs head" id="h2" data-qa-text style="font-size:96px"><span class="l">Comment</span><span class="l"><i class="hl" id="hl2">“WORD”</i></span></div>
+
+  <!-- ===== SCENE BODIES (PLACEHOLDERS - replace with real UI rebuilt from user screenshots) ===== -->
+  <!-- S0: a UI card -->
+  <div class="abs label" id="lab0" style="left:150px;top:510px;opacity:0">// THE TOOL</div>
+  <div class="abs card" id="card0" style="left:150px;top:552px;width:780px;height:520px">
+    <div class="ct">Tool name</div><div class="cs">REBUILT FROM SCREENSHOT</div>
+    <div id="steps0" style="margin-top:28px"></div>
+  </div>
+  <div class="abs stk g" id="s0" data-qa-text style="left:640px;top:480px">100% FREE</div>
+
+  <!-- S1: dark card with typed text -->
+  <div class="abs card dark" id="card1" style="left:170px;top:560px;width:740px;height:220px">
+    <div class="label" style="color:var(--clay)">TYPE SOMETHING</div>
+    <div style="margin-top:22px;height:96px;background:#2a2a2a;border-radius:14px;padding:0 24px;display:flex;align-items:center;font:500 40px var(--mono)"><span id="typed"></span><span id="caret" style="display:inline-block;width:4px;height:44px;background:var(--clay);margin-left:4px"></span></div>
+  </div>
+  <div class="abs pill" id="ok1" style="left:742px;top:536px"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>DONE</div>
+  <div class="abs stk o" id="s1" data-qa-text style="left:300px;top:850px">Bas itna hi!</div>
+
+  <!-- S2: comment box (comment-to-DM CTA) -->
+  <div class="abs card" id="cbox" style="left:150px;top:560px;width:780px">
+    <div style="font:700 30px var(--sans);text-align:center;padding-bottom:18px;border-bottom:1px solid #eee">Comments</div>
+    <div style="display:flex;align-items:center;gap:18px;margin-top:22px">
+      <div id="field"><span id="ftxt"></span><span class="ph" id="fph">Add a comment…</span></div><div id="post">Post</div>
+    </div>
+  </div>
+</div>
+
+<div id="vig" data-qa-ignore></div>
+<canvas id="wipe" width="1080" height="1920" data-qa-ignore></canvas>
+
+<!-- chrome -->
+<div class="abs" id="crumb" data-qa-chrome></div>
+<div class="abs" id="count" data-qa-chrome></div>
+<div class="abs" id="pbar" data-qa-chrome><div id="pfill"></div></div>
+
+<!-- captions -->
+<div class="abs" id="cap"><div id="capin"></div></div>
+
+<!-- end card -->
+<div class="abs" id="pres"><img src="../assets/avatar.png"></div>
+<div class="abs" id="handle"><span class="h" id="hname"></span><span id="follow">Follow</span></div>
+
+<!-- cursor -->
+<svg class="abs" id="cursor" width="54" height="54" viewBox="0 0 24 24"><path d="M4 2l15 10.5-6.6 1.2 3.9 7.4-2.6 1.3-3.9-7.4L4 19.6z" fill="#141414" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>
+
+<script>
+/* =================== CONFIG (edit per reel) =================== */
+const DUR = __DUR__;
+const WORDS = __WORDS__;
+const HANDLE = "@mukku.tech";
+// scene start times (seconds) = start of each spoken line (words.json line index). Headline i shows during scene i.
+const SC = [0, 5.0, 10.0];
+const CRUMBS = ["// 01 — TOPIC", "// 02 — HOW", "// 03 — COMMENT “WORD”"];
+// highlighter swipe time per scene (= when that word is spoken)
+const HL_T = [0.9, 5.6, 10.8];
+// camera beat kicks: times of the main visual hits (stamps, checks, clicks) - same times as the loud SFX cues
+const KICK = [2.0, 6.3, 11.6];
+// ONE halftone wipe as the chapter change into the CTA scene: a=start, m=fully covered (swap scenes here), b=end. null = none
+const WIPE = {a: SC[2]-.34, m: SC[2], b: SC[2]+.34};
+// caption keywords painted clay (whole-word match, so "main" never matches AI)
+const KEYW = /^["“]?(FREE|API|AI|key|guide|setup|DM|comment)["”]?[,!.?]*$/i;  // whole words only
+// end card (avatar + handle + Follow click) appears at this time (after the CTA payoff)
+const END_T = DUR - 1.4;
+// cursor path in WORLD coords: [t, x, y, click?]. Hidden outside the listed ranges (null = hide).
+const CURSOR = [
+  [0.6, 900, 1060], [1.6, 780, 720, 1], [2.4, 780, 720], null,
+  [SC[2]+.2, 980, 1000], [SC[2]+.7, 470, 700, 1], [SC[2]+1.6, 858, 700, 1], null,
+];
+
+/* =================== HELPERS (keep) =================== */
+const $ = id => document.getElementById(id);
+const clamp = (x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const P = (t,a,d)=>clamp((t-a)/d);
+const eo = x=>1-Math.pow(1-x,3);
+const eio = x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back = x=>{const c=1.70158*1.1,c3=c+1;return 1+c3*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,x)=>a+(b-a)*x;
+function st(el,o){for(const k in o) el.style[k]=o[k];}
+// pop in at a (scale with overshoot), optional out
+function pop(el,t,a,{d=.32,out=1e9,od=.22,rot=0,from=.6,dy=0,origin}={}){
+  const pi=P(t,a,d), po=P(t,out,od);
+  const s = lerp(from,1,back(pi)) * lerp(1,.85,eo(po));
+  const o = clamp(pi*3) * (1-eo(po));
+  if(origin) el.style.transformOrigin=origin;
+  st(el,{opacity:o,transform:`translateY(${lerp(dy,0,eo(pi))-po*30}px) rotate(${rot}deg) scale(${s})`});
+  return o;
+}
+// slide/fade a card in at a, out at b (moves up as it leaves = carry, not a cut)
+function card(el,t,a,b=1e9,{dy=60}={}){
+  const pi=a<=0?1:P(t,a,.36), po=P(t,b,.32);
+  st(el,{opacity:clamp(pi*2)*(1-eo(po)),transform:`translateY(${lerp(dy,0,eo(pi))-220*eio(po)}px) scale(${lerp(.82,1,back(pi))*lerp(1,.7,eio(po))})`});
+}
+function head(el,t,a,b){
+  const pi = a<=0?1:P(t,a,.34), po=P(t,b,.22);
+  st(el,{opacity:eo(pi)*(1-po),transform:`translateY(${lerp(50,0,eo(pi))-60*eo(po)}px)`});
+}
+function typeText(el,t,a,dur,text){ el.textContent=text.slice(0,Math.floor(clamp((t-a)/dur)*text.length)); }
+const CHECK_SVG=`<svg width="40" height="40" viewBox="0 0 24 24"><path d="M6 12.5l4 4L18 8" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function check(el,t,a){ const on=P(t,a,.2); el.style.background=on>0?'#22A35A':'#fff'; el.style.borderColor=on>0?'#22A35A':'#DDD6CB';
+  el.style.transform=`scale(${on>0?back(on):1})`; el.innerHTML=on>0?CHECK_SVG:''; }
+function sceneIndex(t){ let si=0; for(let i=0;i<SC.length;i++) if(t>=SC[i]) si=i; return si; }
+
+/* =================== BUILD DYNAMIC DOM (per reel) =================== */
+const STEPS0=["Step one","Step two","Step three","Step four"];
+STEPS0.forEach((s,i)=>{const d=document.createElement('div'); d.className='step'; d.id='st'+i;
+  d.innerHTML=`<div class="num">${i+1}</div>${s}<div class="ck" id="ck${i}"></div>`; $('steps0').appendChild(d);});
+$('hname').textContent=HANDLE;
+
+/* captions: chunks break on punctuation, 4 words, pause > .22s, or line change */
+const chunks=[]; {let cur=[];
+  WORDS.forEach((w,i)=>{cur.push(w); const nx=WORDS[i+1];
+    const brk=!nx || /[,!.?।]$/.test(w.w) || cur.length>=4 || (nx.s-w.e)>.22 || nx.line!==w.line;
+    if(brk){chunks.push(cur);cur=[];}});
+}
+
+/* =================== SCENE FX (per reel): fx(t) for each scene =================== */
+const SCENE_FX = [
+  t=>{ // S0
+    st($('lab0'),{opacity:P(t,.3,.3)*(1-P(t,SC[1]-.3,.15))});
+    card($('card0'),t,.25,SC[1]-.15);
+    STEPS0.forEach((s,i)=>{const k=eo(P(t,.6+i*.12,.3)); st($('st'+i),{opacity:k,transform:`translateX(${(1-k)*-30}px)`}); check($('ck'+i),t,1.6+i*.35);});
+    pop($('s0'),t,KICK[0],{rot:-5,out:SC[1]-.2,from:.4});
+  },
+  t=>{ // S1
+    card($('card1'),t,SC[1]-.05,SC[2]-.1);
+    typeText($('typed'),t,SC[1]+.6,.7,"hello world");
+    $('caret').style.opacity=(t<KICK[1]?(Math.floor(t*3.3)%2?1:.15):0);
+    pop($('ok1'),t,KICK[1],{d:.28,from:.4,out:SC[2]-.1});
+    pop($('s1'),t,KICK[1]+.9,{rot:4,out:SC[2]-.1,from:.4});
+  },
+  t=>{ // S2 (after the wipe peak only)
+    const on=t>=SC[2];
+    st($('cbox'),{opacity:on?1:0,transform:`translateY(${on?lerp(40,0,eo(P(t,SC[2],.35))):0}px)`});
+    const W="WORD", tA=SC[2]+.75; const n=Math.floor(clamp((t-tA)/.42)*W.length);
+    $('ftxt').textContent=W.slice(0,n); $('fph').style.display=n>0?'none':'inline';
+    const foc=t>=SC[2]+.7; $('field').style.borderColor=foc?'#3897F0':'#E6E1D8';
+  },
+];
+
+/* =================== DRAWING (keep) =================== */
+const wctx=$('wipe').getContext('2d');
+function drawWipe(t){
+  wctx.clearRect(0,0,1080,1920);
+  if(!WIPE) return; const {a,m,b}=WIPE; if(t<a||t>b) return;
+  const S=96, R=70; wctx.fillStyle='#D97757';
+  for(let y=-S/2;y<1920+S;y+=S) for(let x=-S/2;x<1080+S;x+=S){
+    const d=(x/1080*.45 + (1920-y)/1920*.55);
+    let k; if(t<=m){const p=(t-a)/(m-a); k=clamp((p*1.5-d)/.5);} else {const p=(t-m)/(b-m); k=1-clamp((p*1.5-d)/.5);}
+    if(k<=0) continue; wctx.beginPath(); wctx.arc(x,y,R*eio(k),0,Math.PI*2); wctx.fill();
+  }
+}
+function cursorAt(t){
+  const c=$('cursor'); const m=(x,y)=>[540+(x-540)*window.WS, 700+(y-700)*window.WS];
+  // find segment
+  let seg=null; for(let i=0;i<CURSOR.length-1;i++){const A=CURSOR[i],B=CURSOR[i+1]; if(A&&B&&t>=A[0]&&t<B[0]){seg=[A,B];break;}}
+  let first=null; for(let i=0;i<CURSOR.length;i++){const A=CURSOR[i]; if(A&&(i===0||!CURSOR[i-1])&&t>=A[0]-.2&&t<A[0]){first=A;}}
+  if(!seg&&!first){ c.style.opacity=0; return; }
+  let x,y,o=1;
+  if(first){ [x,y]=m(first[1],first[2]); o=clamp((t-(first[0]-.2))/.2); }
+  else { const [A,B]=seg; const k=eio(P(t,A[0],Math.min(.55,B[0]-A[0]))); [x,y]=m(lerp(A[1],B[1],k),lerp(A[2],B[2],k));
+    const last=CURSOR[CURSOR.indexOf(B)+1]===null; if(last) o=1-P(t,B[0]-.15,.15); }
+  let press=0; for(const p of CURSOR) if(p&&p[3]) press+=Math.max(0,1-Math.abs(t-p[0])/.08);
+  st(c,{opacity:o,transform:`translate(${x-4}px,${y-6}px) scale(${1-press*.18})`});
+}
+
+/* =================== MAIN RENDER =================== */
+window.render = function(t){
+  st($('g1'),{left:(-120+Math.sin(t*.35)*60)+'px',top:(1150+Math.cos(t*.3)*40)+'px'});
+  st($('g2'),{left:(560+Math.cos(t*.4)*50)+'px',top:(1250+Math.sin(t*.33)*50)+'px'});
+  // camera: slow push per scene + beat kicks
+  const si=sceneIndex(t), local=t-SC[si];
+  const pv=x=>0.03*eo(clamp(x/4.5));
+  const prevEnd = si>0 ? pv(SC[si]-SC[si-1]) : 0;
+  let push = 1.04 + lerp(prevEnd, pv(local), si>0?eio(clamp(local/.35)):1);
+  for(const a of KICK){const x=(t-a)/.4; if(x>0&&x<1) push+=Math.sin(Math.PI*x)*(1-x)*0.05;}
+  window.WS=push; $('world').style.transform=`scale(${push})`;
+  // chrome
+  $('crumb').textContent=CRUMBS[si]; $('count').textContent=`${String(si+1).padStart(2,'0')} / ${String(SC.length).padStart(2,'0')}`;
+  $('pfill').style.width=(clamp(t/DUR)*100)+'%';
+  // headlines (the scene behind a wipe is cut at the wipe peak, hidden by the dots)
+  SC.forEach((a,i)=>{
+    const b = i+1<SC.length ? SC[i+1]-.15 : 1e9;
+    const el=$('h'+i);
+    if(WIPE && i===SC.length-1){ const on=t>=WIPE.m; st(el,{opacity:on?1:0,transform:`translateY(${on?lerp(30,0,eo(P(t,WIPE.m,.3))):0}px)`}); }
+    else if(WIPE && i===SC.length-2 && t>=WIPE.m) el.style.opacity=0;
+    else head(el,t,a,b);
+    const hl=$('hl'+i); if(hl) hl.style.setProperty('--s',eo(P(t,HL_T[i],.3)));
+  });
+  SCENE_FX.forEach(fx=>fx(t));
+  if(WIPE && t>=WIPE.m) ['card1','ok1','s1'].forEach(id=>$(id).style.opacity=0);
+  cursorAt(t);
+  // end card
+  const pa=P(t,END_T,.34), ha=P(t,END_T+.08,.3);
+  st($('pres'),{opacity:clamp(pa*3),transform:`translateY(${lerp(50,0,eo(pa))}px) scale(${lerp(.6,1,back(pa))})`});
+  st($('handle'),{opacity:clamp(ha*3),transform:`translateX(${lerp(-30,0,eo(ha))}px)`});
+  const ft=END_T+.47, fol=t>=ft; $('follow').textContent=fol?'Following':'Follow';
+  $('follow').style.background=fol?'#EFEFEF':'#3897F0'; $('follow').style.color=fol?'#141414':'#fff';
+  $('follow').style.transform=`scale(${1-0.12*Math.max(0,1-Math.abs(t-ft)/.1)})`;
+  // captions
+  let ch=null; for(const c of chunks){ if(t>=c[0].s-.06) ch=c; }
+  const capEl=$('capin');
+  if(!ch || t>ch[ch.length-1].e+.35){ capEl.style.opacity=0; }
+  else{
+    capEl.style.opacity=1;
+    const k=P(t,ch[0].s-.06,.18); capEl.style.transform=`translateY(${(1-eo(k))*18}px) scale(${lerp(.88,1,back(k))})`;
+    capEl.innerHTML=ch.map(w=>{const on=t>=w.s; const kw=KEYW.test(w.w)&&on; const sc=on?lerp(1.12,1,eo(P(t,w.s,.16))):1;
+      return `<span class="${on?'on':''}" style="transform:scale(${sc})${kw?';color:#D97757':''}">${w.w}</span>`}).join(' ');
+  }
+  drawWipe(t);
+};
+window.render(0);
+</script>
+</body></html>

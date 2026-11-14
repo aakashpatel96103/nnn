@@ -1,0 +1,12 @@
+{
+  "slug": "freebuff",
+  "title": "Claude ka free alternative - naam comment mein",
+  "duration": 25.6,
+  "fps": 60,
+  "width": 1080,
+  "height": 1920,
+  "handle": "@mukku.tech",
+  "language": "hi",
+  "status": "delivered",
+  "notes": "v3: 60 fps, 2x supersampled render (2160x3840 -> 1080x1920 lanczos), CRF 14 preset slow. Footage re-extracted at 60 fps 2x (assets/prev60 656x1166, assets/shell60 1640x692 sigma 10 = same visual blur as sigma 5 at 1x). Official Claude logo + real dark card (S0/S3). Export: export/freebuff-v3.mp4. duration = last spoken word end + ~0.6s Cover: export/freebuff-cover.png (1080x1920, 2x -> lanczos), source review/cover/cover.html + render_cover.py."
+}

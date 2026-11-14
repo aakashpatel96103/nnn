@@ -1,0 +1,11 @@
+whisper lang=en: 137 words, match 99%
+aligned 136 script words to 137 whisper words, exact match 99%
+speech ends at 44.96s -> suggested duration 45.6s (set project.json 'duration')
+  line 0: 0.00-4.00s  Claude ke saare models FREE mein use karna chahte ho? Toh ye trick dekho!
+  line 1: 4.40-8.32s  Abhi main Claude ke multiple models use kar raha hoon, aur tum bhi kar sakte ho!
+  line 2: 8.62-16.72s  Bas ek website open karo, sign up karo, Model API par click karo, New Key generate karo, API Key aur Base URL copy kar lo!
+  line 3: 17.08-24.16s  Ab Claude Desktop open karo, three lines par click karo, Help mein jao, Troubleshooting select karo aur Enable Developer Mode on kar do!
+  line 4: 24.42-29.78s  Claude Desktop restart karo, Developer option open karo, Configure Third-Party Inference select karo!
+  line 5: 29.90-37.86s  Credentials Kind mein Static API Key choose karo, Base URL aur API Key enter karo, Save karo aur Claude Desktop ko restart kar do!
+  line 6: 38.10-40.10s  Bas! Tumhara setup ready hai!
+  line 7: 40.38-44.96s  Website ka link chahiye? Toh comment karo kuch bhi, main tumhe direct link DM kar dunga!

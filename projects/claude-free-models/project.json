@@ -1,0 +1,23 @@
+{
+  "slug": "claude-free-models",
+  "title": "Claude ke saare models free - setup trick",
+  "duration": 45.6,
+  "fps": 30,
+  "width": 1080,
+  "height": 1920,
+  "handle": "@mukku.tech",
+  "language": "hi",
+  "status": "delivered",
+  "notes": "duration = last spoken word end + ~0.6s; update after transcribe",
+  "footage_wait": [
+    {
+      "from": -1,
+      "to": 45.61,
+      "start": 0,
+      "fps": 30,
+      "count": 1368,
+      "require": "typeof window.footageReady==='function'",
+      "expr": "()=>window.footageReady()"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+ "slug": "sparrowcodes",
+ "title": "SparrowCodes - ek sentence se video",
+ "duration": 40.5,
+ "fps": 30,
+ "width": 1080,
+ "height": 1920,
+ "handle": "@mukku.tech",
+ "language": "hi",
+ "status": "delivered",
+ "version": 3,
+ "notes": "v3 graphics/motion upgrade. Export: export/sparrowcodes.mp4 (40.5s, 1080x1920, 30fps). Mix -14.2 LUFS / -3.5 dBTP. QA 0 FAIL 0 WARN. Post copy: captions.md"
+}

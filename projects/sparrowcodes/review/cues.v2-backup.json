@@ -1,0 +1,288 @@
+{
+ "fps": 30,
+ "total": 40.5,
+ "cues": [
+  {
+   "frame": 0,
+   "sound": "curated/hook-impact.wav",
+   "gain": -6,
+   "label": "opening frame"
+  },
+  {
+   "frame": 42,
+   "sound": "curated/ui-pop.wav",
+   "gain": -2,
+   "label": "1 SENTENCE sticker"
+  },
+  {
+   "frame": 73,
+   "sound": "latch.wav",
+   "gain": 0,
+   "label": "FREE sticker"
+  },
+  {
+   "frame": 140,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "prompt typing"
+  },
+  {
+   "frame": 150,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "prompt typing"
+  },
+  {
+   "frame": 160,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "prompt typing"
+  },
+  {
+   "frame": 170,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "prompt typing"
+  },
+  {
+   "frame": 200,
+   "sound": "curated/ui-click.wav",
+   "gain": -2,
+   "label": "click 9:16"
+  },
+  {
+   "frame": 218,
+   "sound": "curated/ui-click.wav",
+   "gain": -2,
+   "label": "click Create video"
+  },
+  {
+   "frame": 256,
+   "sound": "clean-ding.wav",
+   "gain": -4,
+   "label": "VIDEO READY pill"
+  },
+  {
+   "frame": 278,
+   "sound": "tick.wav",
+   "gain": -4,
+   "label": "tile 1"
+  },
+  {
+   "frame": 282,
+   "sound": "tick.wav",
+   "gain": -4,
+   "label": "tile 2"
+  },
+  {
+   "frame": 287,
+   "sound": "tick.wav",
+   "gain": -4,
+   "label": "tile 3"
+  },
+  {
+   "frame": 297,
+   "sound": "curated/ui-pop.wav",
+   "gain": 0,
+   "label": "3 FREE sticker"
+  },
+  {
+   "frame": 333,
+   "sound": "tick.wav",
+   "gain": -4,
+   "label": "corner ring"
+  },
+  {
+   "frame": 355,
+   "sound": "thock.wav",
+   "gain": -2,
+   "label": "mark callout"
+  },
+  {
+   "frame": 418,
+   "sound": "shimmer.wav",
+   "gain": -6,
+   "label": "10,000 count-up"
+  },
+  {
+   "frame": 456,
+   "sound": "curated/ui-pop.wav",
+   "gain": 0,
+   "label": "ROZ FREE"
+  },
+  {
+   "frame": 474,
+   "sound": "tick.wav",
+   "gain": -3,
+   "label": "31 languages"
+  },
+  {
+   "frame": 514,
+   "sound": "sparkle.wav",
+   "gain": -6,
+   "label": "voice clone row"
+  },
+  {
+   "frame": 536,
+   "sound": "latch.wav",
+   "gain": -2,
+   "label": "Voice cloning badge"
+  },
+  {
+   "frame": 598,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "terminal typing"
+  },
+  {
+   "frame": 606,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "terminal typing"
+  },
+  {
+   "frame": 614,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "terminal typing"
+  },
+  {
+   "frame": 632,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "bug prompt typing"
+  },
+  {
+   "frame": 642,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "bug prompt typing"
+  },
+  {
+   "frame": 652,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "bug prompt typing"
+  },
+  {
+   "frame": 673,
+   "sound": "tick.wav",
+   "gain": -3,
+   "label": "tests written"
+  },
+  {
+   "frame": 686,
+   "sound": "thock.wav",
+   "gain": -3,
+   "label": "3 failed"
+  },
+  {
+   "frame": 706,
+   "sound": "curated/ui-pop.wav",
+   "gain": 0,
+   "label": "fixed + BUG FIXED sticker"
+  },
+  {
+   "frame": 719,
+   "sound": "clean-ding.wav",
+   "gain": -4,
+   "label": "TESTS PASSED"
+  },
+  {
+   "frame": 780,
+   "sound": "sub-impact.wav",
+   "gain": -4,
+   "label": "$10 lands"
+  },
+  {
+   "frame": 821,
+   "sound": "tick.wav",
+   "gain": -3,
+   "label": "row coding agent"
+  },
+  {
+   "frame": 856,
+   "sound": "tick.wav",
+   "gain": -3,
+   "label": "row AI models"
+  },
+  {
+   "frame": 886,
+   "sound": "tick.wav",
+   "gain": -3,
+   "label": "row 10 videos"
+  },
+  {
+   "frame": 899,
+   "sound": "curated/ui-pop.wav",
+   "gain": 0,
+   "label": "NO WATERMARK"
+  },
+  {
+   "frame": 955,
+   "sound": "thock.wav",
+   "gain": 0,
+   "label": "NO AUTO-RENEW stamp"
+  },
+  {
+   "frame": 994,
+   "sound": "curated/ui-pop.wav",
+   "gain": -2,
+   "label": "UPI pill"
+  },
+  {
+   "frame": 1038,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -4,
+   "label": "halftone wipe into CTA"
+  },
+  {
+   "frame": 1078,
+   "sound": "curated/ui-pop.wav",
+   "gain": -2,
+   "label": "NO CARD sticker"
+  },
+  {
+   "frame": 1102,
+   "sound": "curated/ui-click.wav",
+   "gain": -2,
+   "label": "click comment field"
+  },
+  {
+   "frame": 1108,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "SPARROW typing"
+  },
+  {
+   "frame": 1114,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "SPARROW typing"
+  },
+  {
+   "frame": 1133,
+   "sound": "curated/ui-click.wav",
+   "gain": -2,
+   "label": "click Post"
+  },
+  {
+   "frame": 1149,
+   "sound": "curated/ui-pop.wav",
+   "gain": -2,
+   "label": "DM card"
+  },
+  {
+   "frame": 1160,
+   "sound": "clean-ding.wav",
+   "gain": -4,
+   "label": "DM SENT"
+  },
+  {
+   "frame": 1174,
+   "sound": "shimmer.wav",
+   "gain": -8,
+   "label": "end card"
+  }
+ ]
+}

@@ -1,0 +1,24 @@
+[
+ {
+  "file": "brief.md",
+  "kind": "text",
+  "chars": 7883
+ },
+ {
+  "file": "screen-video.mp4",
+  "kind": "video",
+  "duration": 101.1,
+  "frames": "assets\\screen-video_frames",
+  "sheet": "review/ingest_screen-video.jpg"
+ },
+ {
+  "file": "script.txt",
+  "kind": "text",
+  "chars": 687
+ },
+ {
+  "file": "vo.mp3",
+  "kind": "audio",
+  "duration": 39.235875
+ }
+]

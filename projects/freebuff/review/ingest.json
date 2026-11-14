@@ -1,0 +1,14 @@
+[
+ {
+  "file": "screen-freebuff.mp4",
+  "kind": "video",
+  "duration": 38.133333,
+  "frames": "assets\\screen-freebuff_frames",
+  "sheet": "review/ingest_screen-freebuff.jpg"
+ },
+ {
+  "file": "vo.mp3",
+  "kind": "audio",
+  "duration": 24.365
+ }
+]

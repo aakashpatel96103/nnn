@@ -1,0 +1,255 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- claude-free-models · 8 scenes · __WORDS__ / __DUR__ filled by engine/render.py -->
+<style>
+:root{
+  --bg:#F6F3EE; --ink:#141414; --mute:#8a857c; --clay:#D97757; --clayD:#B85A3A;
+  --green:#22A35A; --line:#E4DED3; --card:#FFFFFF; --blue:#3897F0;
+  --sans:"Segoe UI", Arial, sans-serif; --serif:Georgia, "Times New Roman", serif; --mono:"Cascadia Mono", Consolas, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+body{font-family:var(--sans);color:var(--ink);position:relative}
+.abs{position:absolute}
+#grid{position:absolute;inset:0;background-image:linear-gradient(rgba(20,20,20,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(20,20,20,.045) 1px,transparent 1px);background-size:54px 54px}
+.glow{position:absolute;border-radius:50%;filter:blur(90px)}
+#world{position:absolute;inset:0;transform-origin:540px 700px}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 80% at 50% 42%,rgba(0,0,0,0) 55%,rgba(70,35,15,.10) 100%)}
+#crumb{left:72px;top:92px;font:600 24px var(--mono);letter-spacing:1px;color:var(--mute)}
+#count{right:72px;top:92px;font:600 24px var(--mono);color:var(--ink)}
+#pbar{left:72px;top:138px;width:936px;height:6px;background:rgba(20,20,20,.08);border-radius:3px;overflow:hidden}
+#pfill{height:100%;width:0;background:var(--clay)}
+.head{left:0;width:1080px;top:248px;text-align:center;font-weight:700;letter-spacing:-2px;line-height:1.06;font-size:92px;opacity:0}
+.head .l{display:block}
+.head i{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--clay);letter-spacing:-1px}
+.hl{position:relative;display:inline-block;z-index:0}
+.hl::before{content:"";position:absolute;left:-10px;right:-10px;bottom:6px;height:38%;background:#FFD9C7;z-index:-1;transform-origin:left center;transform:scaleX(var(--s,0));border-radius:6px}
+.stk{font:800 30px var(--sans);background:#fff;border:3px solid var(--ink);padding:10px 20px;border-radius:12px;box-shadow:5px 5px 0 var(--ink);white-space:nowrap;opacity:0}
+.stk.g{background:#E3F7EA;border-color:var(--green);color:#14773D;box-shadow:5px 5px 0 var(--green)}
+.stk.o{background:var(--clay);color:#fff;border-color:var(--ink)}
+.body{opacity:0}
+/* picker */
+#picker{left:150px;top:540px;width:780px;background:#2B2B29;border-radius:22px;padding:18px 14px;box-shadow:0 30px 70px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.2);color:#ECECEC}
+#picker .ph{font:600 22px var(--sans);color:#A9A9A6;padding:4px 18px 12px}
+.row{position:relative;padding:9px 18px;border-radius:14px;height:80px}
+.row .n{font:600 31px/1.15 var(--sans);color:#F2F2F0}
+.row .d{font:400 19px/1.2 var(--sans);color:#A3A3A0;margin-top:3px;white-space:nowrap}
+.row .k{position:absolute;right:20px;top:14px;font:500 22px var(--sans);color:#8d8d8a}
+.free{position:absolute;right:52px;top:24px;font:800 20px var(--mono);color:#fff;background:var(--green);padding:5px 12px;border-radius:999px;letter-spacing:1px}
+#plabel{left:150px;top:498px;font:600 22px var(--mono);color:var(--mute);letter-spacing:1px;opacity:0}
+/* dark window */
+.win{left:150px;top:540px;width:780px;height:540px;background:#1F1F1E;border-radius:22px;box-shadow:0 30px 70px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.25);color:#ECECEC;overflow:hidden}
+.tbar{position:absolute;left:0;right:0;top:0;height:64px;background:#191918;border-bottom:1px solid #2c2c2a}
+.tbar .tt{position:absolute;left:86px;top:16px;font:600 24px var(--sans);color:#aaa}
+.tbar .wc{position:absolute;right:24px;top:18px;font:500 22px var(--mono);color:#777;letter-spacing:8px}
+#chip{position:absolute;right:28px;top:88px;background:#333331;border-radius:14px;padding:10px 18px;font:600 26px var(--sans);color:#F2F2F0;display:flex;gap:10px;align-items:center}
+#ubub{position:absolute;right:28px;top:162px;background:#333331;border-radius:22px;padding:14px 24px;font:500 28px var(--sans)}
+#rep{position:absolute;left:28px;top:250px;display:flex;gap:14px;align-items:center;font:500 31px var(--sans)}
+.mt{position:absolute;top:344px;width:170px;height:150px;background:#2B2B29;border:2px solid #3a3a38;border-radius:18px;text-align:center;padding-top:30px}
+.mt .tn{font:700 26px var(--sans)}
+.mt .st{display:inline-flex;align-items:center;gap:7px;margin-top:10px;font:700 18px var(--mono);color:#888}
+.mt .dot{width:12px;height:12px;border-radius:50%;background:#555}
+/* browser */
+#brow{left:150px;top:540px;width:780px;height:540px;background:#fff;border:2px solid var(--line);border-radius:22px;box-shadow:0 30px 70px rgba(0,0,0,.12);overflow:hidden}
+#brow .bar{position:absolute;left:0;right:0;top:0;height:64px;background:#F1EEE9;display:flex;align-items:center;gap:10px;padding:0 20px}
+#brow .bd{width:14px;height:14px;border-radius:50%;background:#D9D3C9}
+#brow .url{margin-left:14px;flex:1;height:40px;background:#fff;border-radius:999px;display:flex;align-items:center;padding:0 20px;font:500 22px var(--mono);color:#555}
+#pgA,#pgB{position:absolute;left:0;right:0;top:64px;bottom:0}
+#signin{position:absolute;right:196px;top:30px;font:600 24px var(--sans);color:var(--mute)}
+#sgn{position:absolute;right:28px;top:18px;background:var(--ink);color:#fff;font:700 24px var(--sans);padding:12px 26px;border-radius:999px}
+#hero{position:absolute;left:0;right:0;top:150px;text-align:center;font:400 66px/1.1 var(--serif);letter-spacing:-1px}
+.gbar{position:absolute;height:16px;border-radius:8px;background:#EEEAE3}
+#side{position:absolute;left:0;top:0;bottom:0;width:230px;background:#FAF8F5;border-right:1px solid var(--line);padding-top:24px}
+#mapi{margin:0 14px;padding:12px 16px;border-radius:12px;font:700 25px var(--sans);color:var(--ink)}
+#pt{position:absolute;left:262px;top:28px;font:800 36px var(--sans);letter-spacing:-.5px}
+#cred{position:absolute;left:262px;top:96px;width:486px;height:170px;border:2px solid var(--line);border-radius:18px;padding:22px 26px}
+#cred .v{font:800 64px var(--sans);letter-spacing:-1px}
+#cred .s{font:600 22px var(--mono);color:var(--green);letter-spacing:1px;margin-top:8px}
+#nk{position:absolute;left:262px;top:300px;background:var(--blue);color:#fff;font:700 26px var(--sans);padding:14px 28px;border-radius:12px}
+/* key dialog */
+#keyc{left:150px;top:540px;width:780px;height:460px;background:#161616;border-radius:24px;padding:30px;color:#fff;box-shadow:0 30px 60px rgba(0,0,0,.25),0 0 0 1px #000,0 0 60px rgba(217,119,87,.25)}
+#keyc .kt{font:700 34px var(--sans)}
+#keyc .ks{font:500 20px var(--mono);color:#888;margin-top:6px;letter-spacing:1px}
+.klab{position:absolute;left:30px;font:700 20px var(--mono);color:var(--clay);letter-spacing:2px}
+.kfld{position:absolute;left:30px;width:540px;height:76px;background:#232323;border:1px solid #3a3a3a;border-radius:14px;padding:0 22px;display:flex;align-items:center;font:500 31px var(--mono);color:#EDEDED;white-space:nowrap;overflow:hidden}
+.kcp{position:absolute;right:30px;width:150px;height:76px;border-radius:14px;background:#3a3a38;display:flex;align-items:center;justify-content:center;font:700 24px var(--sans);color:#fff}
+/* desktop */
+#hb{position:absolute;left:20px;top:12px;width:44px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+#dhi{position:absolute;left:0;right:0;top:262px;text-align:center;font:400 38px var(--serif);color:#ddd}
+#menu{position:absolute;left:18px;top:70px;width:520px;background:#333331;border-radius:16px;padding:10px;box-shadow:0 20px 50px rgba(0,0,0,.5);opacity:0}
+#mpath{font:600 18px var(--mono);color:#999;padding:6px 14px 8px;letter-spacing:1px}
+.ml{display:none}
+.mi{height:60px;border-radius:12px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;font:500 28px var(--sans);color:#eee}
+.mi .new{font:800 16px var(--mono);background:var(--clay);color:#fff;padding:4px 10px;border-radius:999px;margin-left:12px}
+#tg{width:68px;height:38px;border-radius:19px;background:#555;position:relative;flex:none}
+#tgk{position:absolute;left:4px;top:4px;width:30px;height:30px;border-radius:50%;background:#fff}
+#rst{position:absolute;left:0;right:0;top:64px;bottom:0;background:#1F1F1E;opacity:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;font:600 32px var(--sans);color:#ddd}
+/* form */
+#form{left:150px;top:530px;width:780px;height:600px;background:#fff;border:2px solid var(--line);border-radius:26px;box-shadow:0 30px 70px rgba(0,0,0,.12);padding:32px 40px}
+#form .ft{font:800 38px var(--sans);letter-spacing:-.5px}
+#form .fs{font:600 18px var(--mono);color:var(--mute);letter-spacing:1px;margin-top:4px}
+.flab{position:absolute;left:40px;font:600 22px var(--sans);color:var(--mute)}
+.fbox{position:absolute;left:40px;width:700px;height:68px;border:2px solid #E6E1D8;border-radius:14px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;font:600 28px var(--mono);color:var(--ink);white-space:nowrap;overflow:hidden}
+#sv{position:absolute;right:40px;top:512px;width:190px;height:62px;border-radius:14px;background:var(--ink);color:#fff;font:700 26px var(--sans);display:flex;align-items:center;justify-content:center;gap:8px}
+/* wipe */
+#wipe{position:absolute;inset:0;pointer-events:none}
+/* comments / DM */
+#cbox{left:150px;top:540px;width:780px;background:#fff;border:2px solid var(--line);border-radius:28px;box-shadow:0 30px 70px rgba(0,0,0,.12);padding:26px 30px;opacity:0}
+#cbox .ct{font:700 30px var(--sans);text-align:center;padding-bottom:18px;border-bottom:1px solid #eee}
+.crow{display:flex;align-items:center;gap:18px;margin-top:20px}
+.uav{width:62px;height:62px;border-radius:50%;background:#D9D5CE;flex:none;position:relative;overflow:hidden}
+.uav::after{content:"";position:absolute;left:19px;top:12px;width:24px;height:24px;border-radius:50%;background:#fff;opacity:.9}
+.uav::before{content:"";position:absolute;left:10px;top:40px;width:42px;height:40px;border-radius:50%;background:#fff;opacity:.9}
+#posted{height:0;overflow:hidden}
+#posted .nm{font:700 24px var(--sans)} #posted .tx{font:800 34px var(--sans);letter-spacing:1px}
+#field{flex:1;height:72px;border:2px solid #E6E1D8;border-radius:999px;display:flex;align-items:center;padding:0 24px;font:700 34px var(--sans);color:var(--ink)}
+#field .ph{color:#aaa;font-weight:500}
+#post{font:800 30px var(--sans);color:var(--blue)}
+#dm{left:150px;top:880px;width:780px;background:#fff;border:2px solid var(--line);border-radius:28px;box-shadow:0 30px 70px rgba(0,0,0,.14);padding:24px 28px;opacity:0}
+#dm .hd{display:flex;align-items:center;gap:16px}
+#dm .hd img{width:66px;height:66px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 2px var(--clay)}
+#dm .hn{font:700 28px var(--sans)} #dm .hs{font:500 20px var(--sans);color:var(--mute)}
+#dm .bub{margin-top:18px;background:#EFEFEF;border-radius:26px;padding:18px 24px;font:500 28px var(--sans);line-height:1.3;width:640px}
+#dm .lnk{margin-top:12px;display:inline-flex;align-items:center;gap:12px;background:var(--ink);color:#fff;border-radius:999px;padding:12px 24px;font:700 26px var(--mono)}
+#sent{left:690px;top:858px;font:800 22px var(--mono);color:#fff;background:var(--green);padding:8px 16px;border-radius:999px;display:flex;align-items:center;gap:8px;opacity:0}
+/* captions + end card */
+#cap{left:160px;width:760px;top:1236px;text-align:center}
+#capin{display:inline-block;background:#fff;border-radius:22px;padding:14px 28px;box-shadow:0 10px 30px rgba(0,0,0,.10),0 0 0 2px rgba(20,20,20,.06);font:800 60px var(--sans);letter-spacing:-.5px;line-height:1.14}
+#capin span{display:inline-block;color:#C9C3B9}
+#capin span.on{color:var(--ink)}
+#pres{left:240px;top:1384px;width:150px;height:150px;border-radius:50%;box-shadow:0 14px 32px rgba(0,0,0,.16);border:5px solid #fff;opacity:0;overflow:hidden;background:#fff}
+#pres img{width:100%;height:100%}
+#handle{left:408px;top:1425px;opacity:0;display:flex;align-items:center;gap:16px;background:#fff;border-radius:999px;padding:12px 14px 12px 26px;box-shadow:0 10px 26px rgba(0,0,0,.10),0 0 0 2px rgba(20,20,20,.06)}
+#handle .h{font:800 32px var(--sans)}
+#follow{font:800 24px var(--sans);color:#fff;background:var(--blue);padding:10px 22px;border-radius:12px}
+#cursor{left:0;top:0;z-index:50;opacity:0}
+</style></head>
+<body>
+<div id="grid" data-qa-ignore></div>
+<div class="glow" id="g1" data-qa-ignore style="width:900px;height:700px;background:#FFC7AE;opacity:.55"></div>
+<div class="glow" id="g2" data-qa-ignore style="width:700px;height:600px;background:#FFE3B0;opacity:.5"></div>
+
+<div id="world">
+  <!-- headlines -->
+  <div class="abs head" id="h0" data-qa-text style="font-size:90px"><span class="l">Claude ke saare</span><span class="l">models <i class="hl" id="hl0">free mein.</i></span></div>
+  <div class="abs head" id="h1" data-qa-text style="font-size:92px"><span class="l">Ek app,</span><span class="l"><i class="hl" id="hl1">multiple</i> models</span></div>
+  <div class="abs head" id="h2" data-qa-text style="font-size:92px"><span class="l">Step 1:</span><span class="l"><span class="hl" id="hl2">API key</span> <i>lo</i></span></div>
+  <div class="abs head" id="h3" data-qa-text style="font-size:92px"><span class="l">Step 2:</span><span class="l"><i class="hl" id="hl3">Developer Mode</i></span></div>
+  <div class="abs head" id="h4" data-qa-text style="font-size:92px"><span class="l">Step 3:</span><span class="l"><i class="hl" id="hl4">Third-Party</i></span></div>
+  <div class="abs head" id="h5" data-qa-text style="font-size:92px"><span class="l">Step 4:</span><span class="l"><span class="hl" id="hl5">Key paste</span> <i>karo</i></span></div>
+  <div class="abs head" id="h6" data-qa-text style="font-size:92px"><span class="l">Setup</span><span class="l"><i class="hl" id="hl6">ready!</i></span></div>
+  <div class="abs head" id="h7" data-qa-text style="font-size:88px"><span class="l">Link chahiye?</span><span class="l">Comment <i class="hl" id="hl7">kuch bhi</i></span></div>
+
+  <!-- picker (S0 + S6) -->
+  <div class="abs" id="plabel">// MY MODEL PICKER</div>
+  <div class="abs body" id="picker"><div class="ph">Model · this session</div><div id="rows"></div></div>
+
+  <!-- S1 chat -->
+  <div class="abs body win" id="chat">
+    <div class="tbar"><svg class="abs" style="left:22px;top:14px" width="38" height="38" viewBox="-32 -32 64 64" id="spk1" data-qa-ignore></svg><div class="tt">Claude</div><div class="wc">– ▢ ✕</div></div>
+    <div id="chip"><span id="chipT">Opus 5.5</span><svg width="18" height="18" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="#aaa" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+    <div id="ubub">Kaun sa model ho tum?</div>
+    <div id="rep"><svg width="38" height="38" viewBox="-32 -32 64 64" id="spk2" data-qa-ignore></svg><span id="repT">Main Opus 5.5 hoon.</span></div>
+    <div id="mtiles"></div>
+  </div>
+
+  <!-- S2 browser -->
+  <div class="abs body" id="brow">
+    <div class="bar"><span class="bd"></span><span class="bd"></span><span class="bd"></span><div class="url">https://••••••••.ai</div></div>
+    <div id="pgA">
+      <div id="signin">Sign in</div><div id="sgn">Sign up</div>
+      <div id="hero">The arena for<br><i>frontier AI.</i></div>
+      <div class="gbar" data-qa-ignore style="left:190px;top:360px;width:400px"></div>
+      <div class="gbar" data-qa-ignore style="left:250px;top:392px;width:280px"></div>
+    </div>
+    <div id="pgB" style="opacity:0">
+      <div id="side">
+        <div class="gbar" data-qa-ignore style="position:relative;margin:14px 30px;width:120px"></div>
+        <div id="mapi">Model API</div>
+        <div class="gbar" data-qa-ignore style="position:relative;margin:24px 30px;width:140px"></div>
+        <div class="gbar" data-qa-ignore style="position:relative;margin:24px 30px;width:100px"></div>
+      </div>
+      <div id="pt">Model API</div>
+      <div id="cred"><div class="v">$5.00</div><div class="s">FREE USAGE / DAY</div></div>
+      <div id="nk">+ New key</div>
+    </div>
+  </div>
+
+  <!-- S2b key dialog -->
+  <div class="abs body" id="keyc">
+    <div class="kt">Your key, shown once</div>
+    <div class="ks">COPY BOTH VALUES NOW</div>
+    <div class="klab" style="top:136px">API KEY</div>
+    <div class="kfld" style="top:168px"><span id="k1"></span></div>
+    <div class="kcp" id="c1" style="top:168px">Copy</div>
+    <div class="klab" style="top:282px">BASE URL</div>
+    <div class="kfld" style="top:314px"><span id="k2"></span></div>
+    <div class="kcp" id="c2" style="top:314px">Copy</div>
+  </div>
+
+  <!-- S3/S4 Claude Desktop -->
+  <div class="abs body win" id="desk" style="background:#262624">
+    <div class="tbar"><div id="hb"><svg width="28" height="22" viewBox="0 0 30 24"><path d="M3 3h24M3 12h24M3 21h24" stroke="#ddd" stroke-width="3" stroke-linecap="round"/></svg></div><div class="tt">Claude</div><div class="wc">– ▢ ✕</div></div>
+    <svg class="abs" style="left:358px;top:158px" width="64" height="64" viewBox="-32 -32 64 64" id="spk3" data-qa-ignore></svg>
+    <div id="dhi">How can I help you today?</div>
+    <div id="rst"><svg id="rsp" width="90" height="90" viewBox="0 0 24 24"><path d="M20 12a8 8 0 11-2.4-5.7M20 4v5h-5" fill="none" stroke="#D97757" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Restarting Claude…</span></div>
+    <div id="menu">
+      <div id="mpath">MENU</div>
+      <div class="ml" id="ml0"><div class="mi">File</div><div class="mi">Edit</div><div class="mi">View</div><div class="mi" id="mi3">Help <span>›</span></div></div>
+      <div class="ml" id="ml1"><div class="mi">About Claude</div><div class="mi" id="mt">Troubleshooting <span>›</span></div></div>
+      <div class="ml" id="ml2"><div class="mi" id="mdev">Enable Developer Mode <div id="tg"><div id="tgk"></div></div></div></div>
+      <div class="ml" id="ml3"><div class="mi">File</div><div class="mi">Edit</div><div class="mi">View</div><div class="mi" id="md"><span>Developer<span class="new">NEW</span></span><span>›</span></div><div class="mi">Help</div></div>
+      <div class="ml" id="ml4"><div class="mi" id="cfg" style="font-size:25px">Configure Third-Party Inference…</div></div>
+    </div>
+  </div>
+
+  <!-- S5 form -->
+  <div class="abs body" id="form">
+    <div class="ft">Third-Party Inference</div>
+    <div class="fs">CLAUDE DESKTOP · DEVELOPER</div>
+    <div class="flab" style="top:132px">Credentials Kind</div>
+    <div class="fbox" id="dd" style="top:164px;font-family:var(--sans)"><span id="ddT">Select…</span><svg width="22" height="22" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" fill="none" stroke="#888" stroke-width="2.6" stroke-linecap="round"/></svg></div>
+    <div class="flab" style="top:262px">Base URL</div>
+    <div class="fbox" id="fb" style="top:294px"><span id="fbT"></span></div>
+    <div class="flab" style="top:392px">API Key</div>
+    <div class="fbox" id="fk" style="top:424px"><span id="fkT"></span></div>
+    <div id="sv"><span id="svT">Save</span></div>
+  </div>
+
+  <!-- S7 CTA -->
+  <div class="abs" id="cbox">
+    <div class="ct">Comments</div>
+    <div id="posted"><div class="crow"><div class="uav"></div><div><div class="nm">you <span style="color:#999;font-weight:500">· now</span></div><div class="tx">link pls</div></div>
+      <svg style="margin-left:auto" width="34" height="34" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.6-7 10-7 10z" fill="#ED4956"/></svg></div></div>
+    <div class="crow"><div class="uav"></div><div id="field"><span id="ftxt"></span><span class="ph" id="fph">Add a comment…</span></div><div id="post">Post</div></div>
+  </div>
+  <div class="abs" id="dm">
+    <div class="hd"><img src="../assets/avatar.png"><div><div class="hn">mukku.tech</div><div class="hs">sent you a message · now</div></div></div>
+    <div class="bub">Ye lo website ka <b>direct link</b> + setup steps</div>
+    <div class="lnk"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg>WEBSITE LINK</div>
+  </div>
+  <div class="abs" id="sent"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>DM SENT</div>
+
+  <!-- stickers -->
+  <div class="abs stk g" id="s0" data-qa-text style="left:690px;top:472px">ALL FREE</div>
+  <div class="abs stk o" id="s1" data-qa-text style="left:690px;top:472px">TUM BHI!</div>
+  <div class="abs stk g" id="s2" data-qa-text style="left:654px;top:472px">SIGNED UP</div>
+  <div class="abs stk o" id="s4" data-qa-text style="left:680px;top:472px">NEW OPTION</div>
+  <div class="abs stk" id="s5" data-qa-text style="left:724px;top:466px">RESTART</div>
+  <div class="abs stk g" id="s6" data-qa-text style="left:560px;top:472px;font-size:38px">CONNECTED</div>
+</div>
+
+<div id="vig" data-qa-ignore></div>
+<div class="abs" id="crumb" data-qa-chrome></div>
+<div class="abs" id="count" data-qa-chrome></div>
+<div class="abs" id="pbar" data-qa-chrome><div id="pfill"></div></div>
+<div class="abs" id="cap"><div id="capin"></div></div>
+<div class="abs" id="pres"><img src="../assets/avatar.png"></div>
+<div class="abs" id="handle"><span class="h">@mukku.tech</span><span id="follow">Follow</span></div>
+<svg class="abs" id="cursor" data-qa-ignore width="54" height="64" viewBox="0 0 27 32"><path d="M2 2l0 24 6.5-6 4.2 9.5 4.3-1.9-4.2-9.3 8.7-.3z" fill="#141414" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></svg>
+<canvas id="wipe" width="1080" height="1920" data-qa-ignore></canvas>
+
+<script>
+__SCRIPT__
+</script>
+</body></html>

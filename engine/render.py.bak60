@@ -1,0 +1,104 @@
+"""Render a project's src/reel.html (window.render(t) = pure function of time) to PNG snaps or an MP4.
+
+usage:
+  python engine/render.py <project_dir> snap <out_dir> t1 t2 ...     # stills at exact times
+  python engine/render.py <project_dir> video <out.mp4> [fps] [--ss=2] [--crf=16] [--preset=slow]  # silent 1080x1920 H.264
+  python engine/render.py <project_dir> measure <t> id1 id2 ...      # bounding boxes of elements at time t
+
+Reads <project_dir>/project.json for "duration" (seconds) and "fps".
+Builds src/_build.html: __WORDS__ -> src/words.json, __DUR__ -> project.json duration.
+NOTE: do NOT run with `python -I` - playwright often lives in user site-packages.
+"""
+import json, subprocess, sys
+from pathlib import Path
+from playwright.sync_api import sync_playwright
+
+W, H = 1080, 1920
+
+
+def load_project(proj: Path) -> dict:
+    cfg = json.loads((proj / "project.json").read_text(encoding="utf-8"))
+    cfg.setdefault("fps", 30)
+    return cfg
+
+
+def build(proj: Path) -> Path:
+    src = proj / "src"
+    html = (src / "reel.html").read_text(encoding="utf-8")
+    words_file = src / "words.json"
+    words = words_file.read_text(encoding="utf-8") if words_file.exists() else "[]"
+    dur = str(float(load_project(proj)["duration"]))
+    out = src / "_build.html"
+    out.write_text(html.replace("__WORDS__", words).replace("__DUR__", dur), encoding="utf-8")
+    return out
+
+
+def open_page(p, page_path: Path, dsf: int = 1):
+    b = p.chromium.launch()
+    pg = b.new_page(viewport={"width": W, "height": H}, device_scale_factor=dsf)
+    errs = []
+    pg.on("pageerror", lambda e: errs.append(str(e)))
+    pg.on("console", lambda m: errs.append("console." + m.type + ": " + m.text) if m.type == "error" else None)
+    pg.goto(page_path.as_uri())
+    pg.wait_for_timeout(600)  # fonts/images
+    if errs:
+        raise SystemExit("PAGE ERRORS:\n" + "\n".join(errs))
+    if not pg.evaluate("typeof window.render === 'function'"):
+        raise SystemExit("reel.html must define window.render(t)")
+    return b, pg, errs
+
+
+def main():
+    if len(sys.argv) < 4:
+        print(__doc__); sys.exit(1)
+    proj, mode, target = Path(sys.argv[1]).resolve(), sys.argv[2], Path(sys.argv[3])
+    cfg = load_project(proj)
+    page_path = build(proj)
+    dsf = 2 if (mode == "video" and "--ss=2" in sys.argv) else 1
+    with sync_playwright() as p:
+        b, pg, errs = open_page(p, page_path, dsf)
+        if mode == "snap":
+            target.mkdir(parents=True, exist_ok=True)
+            for ts in sys.argv[4:]:
+                pg.evaluate(f"render({float(ts)})")
+                pg.screenshot(path=str(target / f"t{float(ts):06.2f}.png"))
+            print(f"wrote {len(sys.argv) - 4} snaps to {target}")
+        elif mode == "measure":
+            t = float(sys.argv[3])
+            pg.evaluate(f"render({t})")
+            for i in sys.argv[4:]:
+                r = pg.evaluate(
+                    "(id)=>{const e=document.getElementById(id); if(!e) return null; const r=e.getBoundingClientRect();"
+                    "return [Math.round(r.left),Math.round(r.top),Math.round(r.right),Math.round(r.bottom),getComputedStyle(e).opacity]}", i)
+                print(i, r)
+        elif mode == "video":
+            rest = [r for r in sys.argv[4:] if not r.startswith("--")]
+            fps = int(rest[0]) if rest else int(cfg["fps"])
+            crf = next((r.split("=", 1)[1] for r in sys.argv if r.startswith("--crf=")), "16")
+            preset = next((r.split("=", 1)[1] for r in sys.argv if r.startswith("--preset=")), "slow")
+            n = int(round(float(cfg["duration"]) * fps))
+            target.parent.mkdir(parents=True, exist_ok=True)
+            scale = ["-vf", f"scale={W}:{H}:flags=lanczos"] if dsf > 1 else []
+            ff = subprocess.Popen(["ffmpeg", "-v", "error", "-y", "-f", "image2pipe", "-framerate", str(fps),
+                                   "-i", "-", *scale, "-c:v", "libx264", "-preset", preset, "-crf", crf,
+                                   "-profile:v", "high", "-level", "4.2", "-g", str(fps * 2),
+                                   "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(target)],
+                                  stdin=subprocess.PIPE)
+            for i in range(n):
+                pg.evaluate(f"render({i / fps})")
+                ff.stdin.write(pg.screenshot(type="png"))
+                if i % 60 == 0:
+                    print(f"frame {i}/{n}", flush=True)
+            ff.stdin.close(); ff.wait()
+            if ff.returncode:
+                raise SystemExit("ffmpeg failed")
+            print(f"done {n} frames -> {target}")
+        else:
+            raise SystemExit("mode must be snap | video | measure")
+        if errs:
+            raise SystemExit("PAGE ERRORS during render:\n" + "\n".join(errs))
+        b.close()
+
+
+if __name__ == "__main__":
+    main()

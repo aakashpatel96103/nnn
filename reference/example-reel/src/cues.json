@@ -1,0 +1,185 @@
+{
+ "fps": 30,
+ "total": 18.2,
+ "cues": [
+  {
+   "frame": 0,
+   "t": 0.0,
+   "sound": "curated/hook-impact.wav",
+   "gain": -6,
+   "label": "opening frame"
+  },
+  {
+   "frame": 62,
+   "t": 2.0666,
+   "sound": "curated/ui-pop.wav",
+   "gain": 0,
+   "label": "FREE chips stamp"
+  },
+  {
+   "frame": 109,
+   "t": 3.6333,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "TUM BHI sticker"
+  },
+  {
+   "frame": 137,
+   "t": 4.5666,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -3,
+   "label": "picker -> key card"
+  },
+  {
+   "frame": 146,
+   "t": 4.8666,
+   "sound": "thock.wav",
+   "gain": -2,
+   "label": "key card lands"
+  },
+  {
+   "frame": 166,
+   "t": 5.5333,
+   "sound": "typing-tick.wav",
+   "gain": -4,
+   "label": "key typing",
+   "bed": true,
+   "dur": 0.62
+  },
+  {
+   "frame": 189,
+   "t": 6.3,
+   "sound": "latch.wav",
+   "gain": 0,
+   "label": "key ACTIVE"
+  },
+  {
+   "frame": 214,
+   "t": 7.1333,
+   "sound": "curated/ui-pop.wav",
+   "gain": -2,
+   "label": "model tiles pop"
+  },
+  {
+   "frame": 240,
+   "t": 8.0,
+   "sound": "tick.wav",
+   "gain": 0,
+   "label": "Fable 5.2 on"
+  },
+  {
+   "frame": 246,
+   "t": 8.2,
+   "sound": "tick.wav",
+   "gain": 0,
+   "label": "Opus 5.5 on"
+  },
+  {
+   "frame": 252,
+   "t": 8.4,
+   "sound": "tick.wav",
+   "gain": 0,
+   "label": "Sonnet 5.5 on"
+  },
+  {
+   "frame": 258,
+   "t": 8.6,
+   "sound": "tick.wav",
+   "gain": 0,
+   "label": "Haiku 5.5 on"
+  },
+  {
+   "frame": 273,
+   "t": 9.1,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -3,
+   "label": "key -> guide"
+  },
+  {
+   "frame": 303,
+   "t": 10.1,
+   "sound": "tick.wav",
+   "gain": 0,
+   "label": "step 1 check"
+  },
+  {
+   "frame": 319,
+   "t": 10.6333,
+   "sound": "tick.wav",
+   "gain": 0,
+   "label": "step 2 check"
+  },
+  {
+   "frame": 334,
+   "t": 11.1333,
+   "sound": "tick.wav",
+   "gain": 0,
+   "label": "step 3 check"
+  },
+  {
+   "frame": 347,
+   "t": 11.5666,
+   "sound": "curated/ui-pop.wav",
+   "gain": -1,
+   "label": "step 4 + API KEY chip"
+  },
+  {
+   "frame": 383,
+   "t": 12.7666,
+   "sound": "curated/ui-pop.wav",
+   "gain": -2,
+   "label": "SETUP GUIDE chip"
+  },
+  {
+   "frame": 402,
+   "t": 13.4,
+   "sound": "thock.wav",
+   "gain": 0,
+   "label": "FREE stamp lands"
+  },
+  {
+   "frame": 420,
+   "t": 14.0,
+   "sound": "curated/zoom-swish.wav",
+   "gain": 0,
+   "label": "halftone wipe peak"
+  },
+  {
+   "frame": 450,
+   "t": 15.0,
+   "sound": "typing-tick.wav",
+   "gain": -4,
+   "label": "CLAUDE typing",
+   "bed": true,
+   "dur": 0.45
+  },
+  {
+   "frame": 468,
+   "t": 15.6,
+   "sound": "curated/ui-click.wav",
+   "gain": 2,
+   "label": "Post clicked"
+  },
+  {
+   "frame": 502,
+   "t": 16.7333,
+   "sound": "curated/ui-pop.wav",
+   "gain": 0,
+   "label": "DM arrives"
+  },
+  {
+   "frame": 508,
+   "t": 16.9333,
+   "sound": "clean-ding.wav",
+   "gain": -2,
+   "label": "DM sent"
+  },
+  {
+   "frame": 523,
+   "t": 17.4333,
+   "sound": "curated/ui-click.wav",
+   "gain": 2,
+   "label": "Follow clicked"
+  }
+ ]
+}

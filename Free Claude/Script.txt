@@ -1,0 +1,15 @@
+[excited] Claude ke saare models FREE mein use karna chahte ho? Toh ye trick dekho!
+
+[energetic] Abhi main Claude ke multiple models use kar raha hoon, aur tum bhi kar sakte ho!
+
+[confidently] Bas ek website open karo, sign up karo, Model API par click karo, New Key generate karo, API Key aur Base URL copy kar lo!
+
+[quickly] Ab Claude Desktop open karo, three lines par click karo, Help mein jao, Troubleshooting select karo aur Enable Developer Mode on kar do!
+
+[energetic] Claude Desktop restart karo, Developer option open karo, Configure Third-Party Inference select karo!
+
+[quickly] Credentials Kind mein Static API Key choose karo, Base URL aur API Key enter karo, Save karo aur Claude Desktop ko restart kar do!
+
+[excited] Bas! Tumhara setup ready hai!
+
+[playfully] Website ka link chahiye? Toh comment karo kuch bhi, main tumhe direct link DM kar dunga!

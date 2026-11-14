@@ -1,0 +1,270 @@
+{
+ "fps": 60,
+ "total": 25.6,
+ "cues": [
+  {
+   "frame": 0,
+   "sound": "curated/hook-impact.wav",
+   "gain": -6,
+   "label": "hook card"
+  },
+  {
+   "frame": 24,
+   "sound": "curated/ui-pop.wav",
+   "gain": -8,
+   "label": "bubble 1"
+  },
+  {
+   "frame": 72,
+   "sound": "curated/ui-pop.wav",
+   "gain": -8,
+   "label": "bubble 2"
+  },
+  {
+   "frame": 120,
+   "sound": "curated/ui-pop.wav",
+   "gain": -8,
+   "label": "bubble 3"
+  },
+  {
+   "frame": 148,
+   "sound": "thock.wav",
+   "gain": -5,
+   "label": "sticker SAB PAGAL"
+  },
+  {
+   "frame": 202,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -6,
+   "label": "card 2 in"
+  },
+  {
+   "frame": 224,
+   "sound": "curated/ui-pop.wav",
+   "gain": -5,
+   "label": "Rs 0 pop"
+  },
+  {
+   "frame": 259,
+   "sound": "clean-ding.wav",
+   "gain": -5,
+   "label": "FREE chip"
+  },
+  {
+   "frame": 288,
+   "sound": "tick.wav",
+   "gain": -7,
+   "label": "thumb 1"
+  },
+  {
+   "frame": 298,
+   "sound": "tick.wav",
+   "gain": -7,
+   "label": "thumb 2"
+  },
+  {
+   "frame": 307,
+   "sound": "tick.wav",
+   "gain": -7,
+   "label": "thumb 3"
+  },
+  {
+   "frame": 346,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -5,
+   "label": "recording window in"
+  },
+  {
+   "frame": 366,
+   "sound": "curated/ui-pop.wav",
+   "gain": -5,
+   "label": "phone pop"
+  },
+  {
+   "frame": 431,
+   "sound": "curated/camera-shutter-light.wav",
+   "gain": -7,
+   "label": "REAL RECORDING sticker"
+  },
+  {
+   "frame": 482,
+   "sound": "shimmer.wav",
+   "gain": -7,
+   "label": "proof flash"
+  },
+  {
+   "frame": 524,
+   "sound": "latch.wav",
+   "gain": -6,
+   "label": "name locked pill"
+  },
+  {
+   "frame": 602,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -6,
+   "label": "compare card in"
+  },
+  {
+   "frame": 691,
+   "sound": "clean-ding.wav",
+   "gain": -4,
+   "label": "FREE reveal"
+  },
+  {
+   "frame": 767,
+   "sound": "tick.wav",
+   "gain": -6,
+   "label": "check 1"
+  },
+  {
+   "frame": 778,
+   "sound": "tick.wav",
+   "gain": -6,
+   "label": "check 2"
+  },
+  {
+   "frame": 809,
+   "sound": "tick.wav",
+   "gain": -6,
+   "label": "check 3"
+  },
+  {
+   "frame": 820,
+   "sound": "latch.wav",
+   "gain": -6,
+   "label": "check 4"
+  },
+  {
+   "frame": 853,
+   "sound": "curated/ui-pop.wav",
+   "gain": -6,
+   "label": "sticker SAME KAAM"
+  },
+  {
+   "frame": 918,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -7,
+   "label": "row 1"
+  },
+  {
+   "frame": 947,
+   "sound": "tick.wav",
+   "gain": -6,
+   "label": "row 1 check"
+  },
+  {
+   "frame": 986,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -7,
+   "label": "row 2"
+  },
+  {
+   "frame": 1001,
+   "sound": "tick.wav",
+   "gain": -6,
+   "label": "row 2 check"
+  },
+  {
+   "frame": 1033,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -7,
+   "label": "row 3"
+  },
+  {
+   "frame": 1051,
+   "sound": "tick.wav",
+   "gain": -6,
+   "label": "row 3 check"
+  },
+  {
+   "frame": 1098,
+   "sound": "thock.wav",
+   "gain": -5,
+   "label": "rows join"
+  },
+  {
+   "frame": 1129,
+   "sound": "curated/ui-pop.wav",
+   "gain": -6,
+   "label": "sticker ALL-IN-ONE"
+  },
+  {
+   "frame": 1165,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -4,
+   "label": "wipe"
+  },
+  {
+   "frame": 1213,
+   "sound": "curated/ui-pop.wav",
+   "gain": -6,
+   "label": "sticker FREE LINK"
+  },
+  {
+   "frame": 1284,
+   "sound": "curated/ui-click.wav",
+   "gain": -4,
+   "label": "click field"
+  },
+  {
+   "frame": 1294,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "type"
+  },
+  {
+   "frame": 1301,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "type"
+  },
+  {
+   "frame": 1309,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "type"
+  },
+  {
+   "frame": 1317,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "type"
+  },
+  {
+   "frame": 1325,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "type"
+  },
+  {
+   "frame": 1333,
+   "sound": "typing-tick.wav",
+   "gain": -10,
+   "label": "type"
+  },
+  {
+   "frame": 1356,
+   "sound": "curated/ui-click.wav",
+   "gain": -3,
+   "label": "Post"
+  },
+  {
+   "frame": 1398,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "DM in"
+  },
+  {
+   "frame": 1434,
+   "sound": "clean-ding.wav",
+   "gain": -4,
+   "label": "DM SENT"
+  },
+  {
+   "frame": 1488,
+   "sound": "sparkle.wav",
+   "gain": -8,
+   "label": "follow"
+  }
+ ]
+}
