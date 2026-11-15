@@ -1,0 +1,174 @@
+{
+ "fps": 30,
+ "total": 166.1,
+ "cues": [
+  {
+   "frame": 0,
+   "sound": "curated/hook-impact.wav",
+   "gain": -6,
+   "label": "opening frame"
+  },
+  {
+   "frame": 10,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "intro card lands"
+  },
+  {
+   "frame": 417,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "item 01 number stamp"
+  },
+  {
+   "frame": 641,
+   "sound": "sub-impact.wav",
+   "gain": -9,
+   "label": "Apple $400 premium"
+  },
+  {
+   "frame": 775,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "item 02 number stamp"
+  },
+  {
+   "frame": 1010,
+   "sound": "thock.wav",
+   "gain": -7,
+   "label": "GTA6 212 GB"
+  },
+  {
+   "frame": 1026,
+   "sound": "tick.wav",
+   "gain": -12,
+   "label": "storage bar fills"
+  },
+  {
+   "frame": 1189,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "item 03 number stamp"
+  },
+  {
+   "frame": 1231,
+   "sound": "tick.wav",
+   "gain": -13,
+   "label": "AMD 3 Nov"
+  },
+  {
+   "frame": 1369,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "item 04 number stamp"
+  },
+  {
+   "frame": 1440,
+   "sound": "latch.wav",
+   "gain": -6,
+   "label": "BLOCKED stamp"
+  },
+  {
+   "frame": 1826,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "item 05 number stamp"
+  },
+  {
+   "frame": 1951,
+   "sound": "thock.wav",
+   "gain": -9,
+   "label": "Jan 2027 date"
+  },
+  {
+   "frame": 2135,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "item 06 number stamp"
+  },
+  {
+   "frame": 2419,
+   "sound": "sub-impact.wav",
+   "gain": -8,
+   "label": "$139M fraud figure"
+  },
+  {
+   "frame": 2618,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "item 07 number stamp"
+  },
+  {
+   "frame": 2769,
+   "sound": "sub-impact.wav",
+   "gain": -9,
+   "label": "37M records"
+  },
+  {
+   "frame": 2787,
+   "sound": "tick.wav",
+   "gain": -12,
+   "label": "safe badge"
+  },
+  {
+   "frame": 2973,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "item 08 number stamp"
+  },
+  {
+   "frame": 3191,
+   "sound": "tick.wav",
+   "gain": -12,
+   "label": "~50 participants"
+  },
+  {
+   "frame": 3352,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "item 09 number stamp"
+  },
+  {
+   "frame": 3455,
+   "sound": "thock.wav",
+   "gain": -11,
+   "label": "Gemini 4 Carbon"
+  },
+  {
+   "frame": 3653,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "item 10 number stamp"
+  },
+  {
+   "frame": 3938,
+   "sound": "curated/ui-pop.wav",
+   "gain": -8,
+   "label": "+30% speed bars"
+  },
+  {
+   "frame": 3998,
+   "sound": "curated/ui-pop.wav",
+   "gain": -4,
+   "label": "recap card"
+  },
+  {
+   "frame": 4248,
+   "sound": "curated/zoom-swish.wav",
+   "gain": -4,
+   "label": "halftone wipe into outro"
+  },
+  {
+   "frame": 4274,
+   "sound": "curated/ui-pop.wav",
+   "gain": -5,
+   "label": "comment GTA sticker"
+  },
+  {
+   "frame": 4275,
+   "sound": "clean-ding.wav",
+   "gain": -5,
+   "label": "subscribe end card"
+  }
+ ]
+}

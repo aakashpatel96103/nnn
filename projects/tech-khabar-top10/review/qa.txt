@@ -1,0 +1,4 @@
+INFO loudness -14.1 LUFS
+INFO true peak -3.5 dBTP
+
+QA: 0 FAIL, 0 WARN  -> PASS

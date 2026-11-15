@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<!-- TECH KHABAR — Top 10 Tech Khabar (1920x1080, 16:9 long-form) · project-local layout
+     Mukku kit house style (paper+grid, bold sans + italic serif accent, highlighter, mono chrome,
+     word-synced captions, halftone wipe, end card) re-laid out for 16:9 news.
+     window.render(t) stays a pure function of time. -->
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<style>
+:root{
+  --bg:#F6F3EE; --ink:#141414; --mute:#8a857c; --clay:#D97757; --clayD:#B85A3A;
+  --green:#22A35A; --line:#E4DED3; --card:#FFFFFF; --hl:rgba(217,119,87,.34); --blue:#3897F0; --red:#C0392B;
+  --sans:"Segoe UI", Arial, sans-serif; --serif:Georgia, "Times New Roman", serif; --mono:"Cascadia Mono", Consolas, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+body{font-family:var(--sans);color:var(--ink);position:relative}
+.abs{position:absolute}
+#grid{position:absolute;inset:0;background-image:linear-gradient(rgba(20,20,20,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(20,20,20,.045) 1px,transparent 1px);background-size:72px 72px}
+.glow{position:absolute;border-radius:50%;filter:blur(110px)}
+#world{position:absolute;inset:0;transform-origin:960px 540px}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 46% 40%,rgba(0,0,0,0) 55%,rgba(70,35,15,.10) 100%)}
+
+/* ---------- chrome ---------- */
+#brand{left:96px;top:46px;font:800 32px var(--sans);letter-spacing:-.5px}
+#brand .k{color:var(--clay)}
+#crumb{left:96px;top:90px;font:600 16px var(--mono);letter-spacing:2.4px;color:var(--mute)}
+#date{right:96px;top:52px;font:600 20px var(--mono);letter-spacing:1.4px}
+#pbar{left:96px;top:132px;width:1728px;height:5px;background:rgba(20,20,20,.09);border-radius:3px}
+#pfill{height:100%;width:0;background:var(--clay);border-radius:3px}
+.tick{position:absolute;top:-4px;width:2px;height:13px;background:rgba(20,20,20,.16)}
+
+/* ---------- bottom rule ---------- */
+#foot{left:96px;top:992px;width:1728px}
+#foot .rule{height:1px;background:rgba(20,20,20,.14)}
+#foot .row{display:flex;justify-content:space-between;margin-top:14px;font:600 17px var(--mono);letter-spacing:2px;color:var(--mute)}
+#foot .row b{color:var(--ink);font-weight:700}
+
+/* ---------- item number ---------- */
+#chip{left:96px;top:196px;opacity:0}
+#chip .n{font:700 17px var(--mono);letter-spacing:3.4px;color:var(--mute)}
+#chip .big{font:800 88px/0.9 var(--sans);letter-spacing:-5px;color:var(--clay);margin-top:8px}
+
+/* ---------- headline ---------- */
+.head{left:96px;width:980px;top:336px;font:700 96px/1.04 var(--sans);letter-spacing:-3px;opacity:0}
+.head .l{display:block}
+.head i{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--clay);letter-spacing:-1px}
+.hl{position:relative;display:inline-block;z-index:0}
+.hl::before{content:"";position:absolute;left:-14px;right:-14px;bottom:8px;height:38%;background:var(--hl);z-index:-1;transform-origin:left center;transform:scaleX(var(--s,0));border-radius:6px}
+
+/* ---------- detail line under the headline ---------- */
+.det{left:96px;top:648px;width:980px;opacity:0}
+.det .row{display:flex;align-items:baseline;gap:14px;font:600 24px/1.45 var(--sans);color:#4a463e;margin-bottom:4px}
+.det .row::before{content:"";width:22px;height:2px;background:var(--clay);flex:none;transform:translateY(-7px)}
+
+/* ---------- stat card ---------- */
+.card{right:96px;top:262px;width:700px;height:466px;background:#fff;border:2px solid var(--line);border-radius:36px;
+      box-shadow:0 40px 90px rgba(0,0,0,.13);padding:40px 46px;opacity:0;overflow:hidden;
+      display:flex;flex-direction:column}
+.card .lab{font:700 17px var(--mono);letter-spacing:2.6px;color:var(--mute)}
+.card .big{font:800 124px/0.86 var(--sans);letter-spacing:-6px;margin-top:18px;transform-origin:left center}
+.card .sub{font:700 27px/1.24 var(--sans);letter-spacing:-.4px;margin-top:12px}
+.card .mini{display:flex;gap:12px;margin-top:auto}
+.card .mini > div{flex:1;background:#FAF7F2;border:1px solid var(--line);border-radius:14px;padding:11px 13px;min-width:0}
+.card .mini > div > .k{font:700 13px var(--mono);letter-spacing:1.6px;color:var(--mute)}
+.card .mini > div > .v{font:800 19px/1.15 var(--sans);letter-spacing:-.3px;margin-top:4px;overflow-wrap:anywhere}
+.bar{position:relative;height:14px;border-radius:7px;background:#EFEBE4;margin-top:22px;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--clay);border-radius:7px}
+.stamp{position:absolute;right:34px;top:30px;font:800 20px var(--mono);letter-spacing:2px;color:#fff;background:var(--red);
+       padding:9px 16px;border-radius:9px;transform:rotate(-7deg) scale(0);opacity:0;z-index:3}
+.speed{display:flex;align-items:flex-end;gap:14px;height:74px;margin-top:16px}
+.speed i{width:54px;background:#EFEBE4;border-radius:8px 8px 0 0;height:26%}
+.speed i.on{background:var(--clay)}
+.badge{position:absolute;right:34px;top:26px;width:74px;height:74px;border-radius:50%;background:var(--green);display:flex;
+       align-items:center;justify-content:center;transform:scale(0);opacity:0}
+#endcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;height:100%}
+#endcard .mono{width:132px;height:132px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;
+       justify-content:center;font:800 56px var(--sans);letter-spacing:-3px;box-shadow:0 14px 38px rgba(184,90,58,.35)}
+#endcard .nm{font:800 44px var(--sans);letter-spacing:-1.2px}
+#endcard .tag{font:600 15px var(--mono);letter-spacing:2.4px;color:var(--mute)}
+#endcard .ch{margin-top:2px;font:800 25px var(--sans);color:#fff;background:var(--blue);padding:12px 28px;border-radius:14px}
+#endcard .cmt{font:800 24px var(--sans);color:var(--ink);border:3px solid var(--ink);border-radius:14px;padding:9px 20px;
+       box-shadow:5px 5px 0 var(--ink);background:#fff}
+#endcard .cmt b{color:var(--clay)}
+
+/* ---------- captions ---------- */
+#cap{left:180px;width:1560px;top:846px;text-align:center}
+#capin{display:inline-block;background:#fff;border-radius:24px;padding:16px 36px;box-shadow:0 14px 40px rgba(0,0,0,.13),0 0 0 2px rgba(20,20,20,.05);
+       font:800 58px/1.12 var(--sans);letter-spacing:-.8px;opacity:0;white-space:nowrap}
+#capin span{display:inline-block;color:#C9C3B9;padding-right:.17em}
+#capin span.on{color:var(--ink)}
+
+/* ---------- sticker (comment CTA) ---------- */
+.stk{background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:6px 6px 0 var(--ink);
+     padding:12px 22px;font:800 30px var(--sans);letter-spacing:-.4px;opacity:0;white-space:nowrap}
+.stk b{color:var(--clay)}
+
+#wipe{position:absolute;inset:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="grid" data-qa-ignore></div>
+<div class="glow" id="g1" data-qa-ignore style="width:1000px;height:760px;background:#FFC7AE;opacity:.34;left:-140px;top:420px"></div>
+<div class="glow" id="g2" data-qa-ignore style="width:820px;height:640px;background:#FFE3B0;opacity:.36;left:900px;top:600px"></div>
+
+<div id="world">
+  <div class="abs" id="chip" data-qa-ignore><div class="n" id="chipn">TOP 10</div><div class="big" id="chipb">00</div></div>
+  <div id="heads"></div>
+  <div id="dets"></div>
+  <div id="cards"></div>
+  <div class="abs stk" id="cta13" data-qa-text style="left:96px;top:746px">Comment karo <b>“GTA”</b></div>
+</div>
+
+<div id="vig" data-qa-ignore></div>
+<canvas id="wipe" width="1920" height="1080" data-qa-ignore></canvas>
+
+<div class="abs" id="brand" data-qa-chrome><span class="k">TECH</span> KHABAR</div>
+<div class="abs" id="crumb" data-qa-chrome>// 00 — INTRO</div>
+<div class="abs" id="date" data-qa-chrome>14 NOV 2026</div>
+<div class="abs" id="pbar" data-qa-chrome><div id="pfill"></div></div>
+<div class="abs" id="foot" data-qa-chrome>
+  <div class="rule"></div>
+  <div class="row"><span>TECH KHABAR</span><span>TOP 10 · <b>14 NOV 2026</b></span><span id="ftcount">01 / 14</span></div>
+</div>
+
+<div class="abs" id="cap"><div id="capin"></div></div>
+
+<script>
+/* =================== CONFIG =================== */
+const DUR = __DUR__;
+const WORDS = __WORDS__;
+
+const SCENES = [
+  {crumb:"// 00 — INTRO", num:"TECH KHABAR", chip:"—",
+   h:[`Aaj ki <span class="hl" id="hl0">10 badi</span>`, `<i>khabrein</i>`],
+   d:["Tech Khabar · 14 November 2026", "Seedhi aur simple Hinglish mein"],
+   card:{lab:"TECH KHABAR", big:"TOP 10", sub:"aaj ki 10 sabse badi tech khabrein",
+         mini:[{k:"DATE",v:"14 NOV"},{k:"LENGTH",v:"2:46"},{k:"LANG",v:"HINGLISH"}]}},
+
+  {crumb:"// 01 — BULLETIN", num:"AAJ KA BULLETIN", chip:"10",
+   h:[`10 khabrein,`, `<i>ek hi video</i> mein`],
+   d:["Apple se Anthropic tak — sab kuch", "Video ko end tak zaroor dekhna"],
+   card:{lab:"AAJ KA BULLETIN", big:"10", sub:"khabrein · 2 minute 46 second",
+         mini:[{k:"INDIA",v:"14 NOV"},{k:"ITEMS",v:"10"},{k:"LANG",v:"HINGLISH"}]}},
+
+  {crumb:"// 02 — APPLE", num:"ITEM 01", chip:"01",
+   h:[`Apple ka pehla <span class="hl" id="hl2">touchscreen</span>`, `<i>MacBook Pro</i>`],
+   d:["Same chip wale model se $400 mehnga", "Deliveries 6 November se shuru"],
+   card:{lab:"PRICE PREMIUM", big:"$400", sub:"mehnga — same chip wale model se",
+         mini:[{k:"DELIVERY",v:"6 NOV"},{k:"CHIP",v:"M5 PRO"}], foot:"OLED TOUCH DISPLAY", at:/400/}},
+
+  {crumb:"// 03 — GTA6", num:"ITEM 02", chip:"02",
+   h:[`GTA6 <span class="hl" id="hl3">preload</span> shuru,`, `<i>212 GB</i>`],
+   d:["Storage abhi se khaali kar lo", "Launch: 19 November, midnight"],
+   card:{lab:"GAME SIZE", big:"212 GB", sub:"launch: 19 November",
+         mini:[{k:"PRELOAD",v:"10 NOV"},{k:"LAUNCH",v:"19 NOV"}], extra:"bar", foot:"PS5 · XBOX SERIES X|S", at:/212/}},
+
+  {crumb:"// 04 — AMD", num:"ITEM 03", chip:"03",
+   h:[`AMD ke <span class="hl" id="hl4">Q3 results</span>`, `<i>out</i>`],
+   d:["3 November ko official numbers", "Teesre quarter ke results"],
+   card:{lab:"RESULTS", big:"3 NOV", sub:"third quarter — official numbers",
+         mini:[{k:"QUARTER",v:"Q3"},{k:"DATE",v:"3 NOV"}], foot:"AMD", at:/3/}},
+
+  {crumb:"// 05 — SOFTBANK", num:"ITEM 04", chip:"04",
+   h:[`China ne <span class="hl" id="hl5">$5.4B</span> deal`, `<i>roka</i>`],
+   d:["SoftBank ABB Robotics kharidna chahta tha", "ABB ne 5 November ko confirm kiya"],
+   card:{lab:"DEAL BLOCKED", big:"$5.4B", sub:"SoftBank × ABB Robotics",
+         mini:[{k:"CONFIRM",v:"5 NOV"},{k:"BUYER",v:"SOFTBANK"}], extra:"block", foot:"CHINA: SECURITY REVIEW"}},
+
+  {crumb:"// 06 — BLUE ORIGIN", num:"ITEM 05", chip:"05",
+   h:[`New Glenn ki udaan`, `<span class="hl" id="hl6">Jan 2027</span> tak ruki`],
+   d:["Reuters: baat internal memo mein likhi hai", "Agli flight January 2027 se pehle nahi"],
+   card:{lab:"NEXT FLIGHT", big:"JAN 2027", sub:"Blue Origin · New Glenn",
+         mini:[{k:"SOURCE",v:"REUTERS"},{k:"DOC",v:"MEMO"}], foot:"ROCKET: NEW GLENN", at:/2027/}},
+
+  {crumb:"// 07 — AI FRAUD", num:"ITEM 06", chip:"06",
+   h:[`AI se <span class="hl" id="hl7">nakal</span>,`, `<i>$139M</i> ka fraud`],
+   d:["America mein 3 logon par charges", "AI se CEO aur vakil ki nakal"],
+   card:{lab:"ALLEGED FRAUD", big:"$139M", sub:"3 logon par charges",
+         mini:[{k:"STATUS",v:"CHARGES"},{k:"PROOF",v:"NAHI"}], foot:"ABHI SABIT NAHI HUA", at:/139/}},
+
+  {crumb:"// 08 — NITORI", num:"ITEM 07", chip:"07",
+   h:[`Nitori ka <span class="hl" id="hl8">data breach</span>,`, `<i>37M</i> records`],
+   d:["Japan ki furniture company", "Passwords aur card details safe: company"],
+   card:{lab:"DATA BREACH", big:"37M", sub:"customer records chori",
+         mini:[{k:"SAFE",v:"PASSWORDS"},{k:"COUNTRY",v:"JAPAN"}], extra:"shield", at:/37/}},
+
+  {crumb:"// 09 — AI SAFETY", num:"ITEM 08", chip:"08",
+   h:[`Paris mein <span class="hl" id="hl9">AI safety</span>`, `<i>meeting</i>`],
+   d:["9 November · Paris Call for AI Safety", "Voluntary — kisi par bound nahi"],
+   card:{lab:"SUMMIT", big:"~50", sub:"participants",
+         mini:[{k:"DATE",v:"9 NOV"},{k:"TYPE",v:"VOLUNTARY"}], foot:"PARIS CALL FOR AI SAFETY", at:/50/}},
+
+  {crumb:"// 10 — GOOGLE", num:"ITEM 09", chip:"09",
+   h:[`<span class="hl" id="hl10">Gemini 4 Carbon</span>`, `<i>sab ke liye</i>`],
+   d:["10 November se paying developers ke liye", "Pricing official page par check karo"],
+   card:{lab:"API PRICING", big:"$2/$10", sub:"per 1M tokens — intro rate",
+         mini:[{k:"FROM",v:"1 DEC $4/$20"},{k:"DATE",v:"10 NOV"}], foot:"GOOGLE GEMINI API"}},
+
+  {crumb:"// 11 — ANTHROPIC", num:"ITEM 10", chip:"10",
+   h:[`Anthropic ke naye models,`, `<span class="hl" id="hl11">30%</span> <i>tez</i>`],
+   d:["Fable 5.2 aur Mythos 5.2 launch", "Pichle 5.1 se 30% tak tez"],
+   card:{lab:"SPEED-UP", big:"+30%", sub:"Fable 5.2 · Mythos 5.2",
+         mini:[{k:"DATE",v:"9 NOV"},{k:"VS",v:"5.1"}], extra:"speed", at:/30/}},
+
+  {crumb:"// 12 — RECAP", num:"BULLETIN", chip:"—",
+   h:[`Inme se <span class="hl" id="hl12">kaunsi</span>`, `<i>best lagi?</i>`],
+   d:["Comment mein zaroor batana", "Aaj ki poori bulletin — 10 khabrein"],
+   card:{lab:"AAJ KA BULLETIN", big:"10/10", sub:"khabrein — end tak dekha?",
+         mini:[{k:"ITEMS",v:"10"},{k:"TIME",v:"2:46"}], foot:"COMMENT ME BATAO"}},
+
+  {crumb:"// 13 — OUTRO", num:"TECH KHABAR", chip:"—",
+   h:[`<span class="hl" id="hl13">Subscribe</span> karo,`, `<i>bell bhi dabao</i>`],
+   d:["Like karo, dosto ke saath share karo", "Har nayi khabar sabse pehle aap tak"],
+   card:{end:true}},
+];
+
+/* =================== HELPERS =================== */
+const $ = id => document.getElementById(id);
+const clamp = (x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const P = (t,a,d)=>clamp((t-a)/d);
+const eo = x=>1-Math.pow(1-x,3);
+const eio = x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back = x=>{const c=1.70158*1.1,c3=c+1;return 1+c3*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,x)=>a+(b-a)*x;
+function st(el,o){for(const k in o) el.style[k]=o[k];}
+function head(el,t,a,b){
+  const pi = a<=0?1:P(t,a,.34), po=P(t,b,.22);
+  st(el,{opacity:eo(pi)*(1-po),transform:`translateY(${lerp(44,0,eo(pi))-52*eo(po)}px)`});
+}
+function card(el,t,a,b=1e9){
+  const pi=a<=0?1:P(t,a,.38), po=P(t,b,.3);
+  st(el,{opacity:clamp(pi*2)*(1-eo(po)),transform:`translateY(${lerp(46,0,eo(pi))-150*eio(po)}px) scale(${lerp(.94,1,back(pi))*lerp(1,.86,eio(po))})`});
+}
+function det(el,t,a,b=1e9){
+  const pi = a<=0?1:P(t,a+.28,.36), po=P(t,b,.2);
+  st(el,{opacity:eo(pi)*(1-po),transform:`translateY(${lerp(26,0,eo(pi))}px)`});
+}
+const CHECK=`<svg width="42" height="42" viewBox="0 0 24 24"><path d="M6 12.5l4 4L18 8" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/* =================== SCENE TIMES (from words.json lines) =================== */
+const SC = SCENES.map((_,i)=>{ const w = WORDS.find(w=>w.line===i); return w ? w.s : 0; });
+SC[0]=0;
+const WIPE = {a: SC[13]-.36, m: SC[13], b: SC[13]+.36};
+const BIG = [0, SC[2], SC[3], SC[5], SC[7], SC[8], SC[11], SC[13]];
+const KEYW = /^["“]?(\$?[\d][\d.,]*%?|GB|GTA6?|AI|Apple|Gemini|Anthropic|Nitori|AMD|China|Paris|SoftBank|ABB|Blue|Origin|MacBook|Carbon|Subscribe|Google)["”]?[,!.?]*$/i;
+
+function wt(i, re, frac=.45){
+  const ws = WORDS.filter(w=>w.line===i);
+  const hit = ws.find(w=>re.test(w.w.replace(/[^\w.$%]/g,'')));
+  if(hit) return hit.s;
+  const next = i+1<SC.length ? SC[i+1] : DUR;
+  return SC[i] + frac*(next-SC[i]);
+}
+
+/* =================== BUILD DOM =================== */
+const heads=$('heads'), dets=$('dets'), cards=$('cards');
+SCENES.forEach((s,i)=>{
+  const h=document.createElement('div');
+  h.className='abs head'; h.id='h'+i; h.setAttribute('data-qa-text','');
+  h.innerHTML=s.h.map(l=>`<span class="l">${l}</span>`).join('');
+  heads.appendChild(h);
+
+  const d=document.createElement('div');
+  d.className='abs det'; d.id='d'+i; d.setAttribute('data-qa-text','');
+  d.innerHTML=(s.d||[]).map(l=>`<div class="row">${l}</div>`).join('');
+  dets.appendChild(d);
+
+  const c=document.createElement('div');
+  c.className='abs card'; c.id='c'+i;
+  if(s.card.end){
+    c.style.padding='0';
+    c.innerHTML=`<div id="endcard">
+        <div class="mono">TK</div>
+        <div class="nm">Tech Khabar</div>
+        <div class="tag">TECH NEWS · HINGLISH</div>
+        <div class="ch">Subscribe</div>
+        <div class="cmt">Comment karo <b>“GTA”</b></div></div>`;
+  } else {
+    const k=s.card;
+    c.innerHTML=`<div class="lab">${k.lab}</div>
+      <div class="big">${k.big}</div>
+      <div class="sub">${k.sub}</div>
+      ${k.extra==='bar'?`<div class="bar"><i id="bar${i}"></i></div>`:''}
+      ${k.extra==='speed'?`<div class="speed"><i></i><i></i><i class="on"></i></div>`:''}
+      ${k.extra==='block'?`<div class="stamp" id="stamp${i}">BLOCKED</div>`:''}
+      ${k.extra==='shield'?`<div class="badge" id="badge${i}">${CHECK}</div>`:''}
+      <div class="mini">${(k.mini||[]).map(m=>`<div><div class="k">${m.k}</div><div class="v">${m.v}</div></div>`).join('')}</div>`;
+  }
+  cards.appendChild(c);
+});
+
+/* auto-fit each headline to its 2 lines (no wrap, never collide with the detail block) */
+function fitHeads(){
+  document.querySelectorAll('.head').forEach(h=>{
+    const lines=[...h.querySelectorAll('.l')];
+    for(let fs=96; fs>52; fs-=2){
+      h.style.fontSize=fs+'px';
+      if(lines.every(l=>l.scrollWidth<=h.clientWidth+1)) break;
+    }
+  });
+}
+fitHeads();
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeads);
+
+for(let i=1;i<SCENES.length;i++){ const d=document.createElement('div'); d.className='tick';
+  d.style.left=((SC[i]/DUR)*1728)+'px'; $('pbar').appendChild(d); }
+
+const chunks=[]; {let cur=[];
+  WORDS.forEach((w,i)=>{cur.push(w); const nx=WORDS[i+1];
+    const brk=!nx || /[,!.?।]$/.test(w.w) || cur.length>=4 || (nx.s-w.e)>.22 || nx.line!==w.line;
+    if(brk){chunks.push(cur);cur=[];}});
+}
+
+/* =================== PER-SCENE FX =================== */
+function chipAt(t,i){
+  const a=SC[i]-.12, out = i+1<SC.length ? SC[i+1]-.2 : DUR;
+  const pi=P(t,a,.4), po=P(t,out,.2), hidden = SCENES[i].chip==='—';
+  st($('chip'),{display:hidden?'none':'block', opacity:hidden?0:clamp(pi*2.2)*(1-eo(po)),
+    transform:`translateY(${lerp(26,0,back(clamp(pi)))}px)`});
+  $('chipn').textContent=SCENES[i].num;
+  $('chipb').textContent=SCENES[i].chip;
+}
+function extras(t,i){
+  const s=SCENES[i].card; if(!s||s.end) return;
+  if(s.extra==='bar'){ const a=wt(i,/212/,.5); st($('bar'+i),{width:(78*eo(P(t,a,.5)))+'%'}); }
+  if(s.extra==='block'){ const a=wt(i,/rok|bada|China/,.26), k=P(t,a,.3);
+    st($('stamp'+i),{opacity:clamp(k*2),transform:`rotate(-7deg) scale(${lerp(1.7,1,back(k))})`}); }
+  if(s.extra==='shield'){ const a=wt(i,/37|records/,.5), k=P(t,a,.34);
+    st($('badge'+i),{opacity:clamp(k*2),transform:`scale(${back(k)})`}); }
+  if(s.extra==='speed'){ const a=wt(i,/30/,.6);
+    document.querySelectorAll('#c'+i+' .speed i').forEach((b,n)=>{ const k=eo(P(t,a+n*.09,.4));
+      b.style.height=(26+n*22+34*k)+'%'; }); }
+  if(s.at){ const el=document.querySelector('#c'+i+' .big'); const a=wt(i,s.at,.35), k=P(t,a,.28);
+    if(el) el.style.transform=`scale(${lerp(1.05,1,eo(k))})`; }
+}
+
+/* =================== WIPE =================== */
+const wctx=$('wipe').getContext('2d');
+function drawWipe(t){
+  wctx.clearRect(0,0,1920,1080);
+  const {a,m,b}=WIPE; if(t<a||t>b) return;
+  const S=112,R=84; wctx.fillStyle='#D97757';
+  for(let y=-S/2;y<1080+S;y+=S) for(let x=-S/2;x<1920+S;x+=S){
+    const d=(x/1920*.45+(1080-y)/1080*.55);
+    let k; if(t<=m){const p=(t-a)/(m-a); k=clamp((p*1.5-d)/.5);} else {const p=(t-m)/(b-m); k=1-clamp((p*1.5-d)/.5);}
+    if(k<=0) continue; wctx.beginPath(); wctx.arc(x,y,R*eio(k),0,Math.PI*2); wctx.fill();
+  }
+}
+
+/* =================== MAIN =================== */
+window.render = function(t){
+  st($('g1'),{left:(-160+Math.sin(t*.3)*70)+'px',top:(420+Math.cos(t*.27)*50)+'px'});
+  st($('g2'),{left:(900+Math.cos(t*.36)*60)+'px',top:(600+Math.sin(t*.3)*60)+'px'});
+
+  let si=0; for(let i=0;i<SC.length;i++) if(t>=SC[i]) si=i;
+  const local=t-SC[si];
+  const pv=x=>0.026*eo(clamp(x/5));
+  const prevEnd = si>0 ? pv(SC[si]-SC[si-1]) : 0;
+  let push = 1.025 + lerp(prevEnd, pv(local), si>0?eio(clamp(local/.35)):1);
+  for(const a of BIG){const x=(t-a)/.42; if(x>0&&x<1) push+=Math.sin(Math.PI*x)*(1-x)*0.028;}
+  st($('world'),{transform:`scale(${push})`});
+
+  $('pfill').style.width=(clamp(t/DUR)*100)+'%';
+  $('crumb').textContent=SCENES[si].crumb;
+  $('ftcount').textContent=String(si+1).padStart(2,'0')+' / 14';
+
+  SCENES.forEach((s,i)=>{
+    const a=SC[i], b = i+1<SC.length ? SC[i+1]-.18 : 1e9;
+    const h=$('h'+i), d=$('d'+i), c=$('c'+i);
+    if(i===13){
+      const on=t>=WIPE.m;
+      st(h,{opacity:on?1:0,transform:`translateY(${on?lerp(40,0,eo(P(t,WIPE.m,.32))):20}px)`});
+      det(d,t,WIPE.m); card(c,t,WIPE.m+.05);
+    } else if(i===12 && t>=WIPE.m){ st(h,{opacity:0}); st(d,{opacity:0}); st(c,{opacity:0}); }
+    else { head(h,t,a,b); det(d,t,a,b); card(c,t,a,b); }
+    const hl=$('hl'+i); if(hl) hl.style.setProperty('--s', eo(P(t,a+.55,.42)));
+  });
+
+  chipAt(t,si);
+  extras(t,si);
+
+  // "comment me likho GTA" sticker — lands on the spoken word, stays till the end
+  const cta=$('cta13'), ta=wt(13,/GTA/,.18), kc=P(t,ta,.34);
+  st(cta,{opacity:clamp(kc*2),transform:`translateY(${lerp(24,0,eo(kc))}px) rotate(${lerp(-6,-2,eo(kc))}deg) scale(${lerp(.7,1,back(kc))})`});
+
+  let ch=null; for(const c of chunks){ if(t>=c[0].s-.06) ch=c; }
+  const capEl=$('capin');
+  if(!ch || t>ch[ch.length-1].e+.35){ capEl.style.opacity=0; }
+  else{
+    capEl.style.opacity=1;
+    const k=P(t,ch[0].s-.06,.18);
+    capEl.style.transform=`translateY(${(1-eo(k))*16}px) scale(${lerp(.9,1,back(k))})`;
+    capEl.innerHTML=ch.map(w=>{const on=t>=w.s; const kw=KEYW.test(w.w)&&on; const sc=on?lerp(1.06,1,eo(P(t,w.s,.16))):1;
+      return `<span class="${on?'on':''}" style="transform:scale(${sc})${kw?';color:#D97757':''}">${w.w}</span>`}).join('');
+  }
+  drawWipe(t);
+};
+window.render(0);
+</script>
+</body></html>

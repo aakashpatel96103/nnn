@@ -1,0 +1,3096 @@
+<!DOCTYPE html>
+<!-- TECH KHABAR — Top 10 Tech Khabar (1920x1080, 16:9 long-form) · project-local layout
+     Mukku kit house style (paper+grid, bold sans + italic serif accent, highlighter, mono chrome,
+     word-synced captions, halftone wipe, end card) re-laid out for 16:9 news.
+     window.render(t) stays a pure function of time. -->
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<style>
+:root{
+  --bg:#F6F3EE; --ink:#141414; --mute:#8a857c; --clay:#D97757; --clayD:#B85A3A;
+  --green:#22A35A; --line:#E4DED3; --card:#FFFFFF; --hl:rgba(217,119,87,.34); --blue:#3897F0; --red:#C0392B;
+  --sans:"Segoe UI", Arial, sans-serif; --serif:Georgia, "Times New Roman", serif; --mono:"Cascadia Mono", Consolas, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+body{font-family:var(--sans);color:var(--ink);position:relative}
+.abs{position:absolute}
+#grid{position:absolute;inset:0;background-image:linear-gradient(rgba(20,20,20,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(20,20,20,.045) 1px,transparent 1px);background-size:72px 72px}
+.glow{position:absolute;border-radius:50%;filter:blur(110px)}
+#world{position:absolute;inset:0;transform-origin:960px 540px}
+#vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 46% 40%,rgba(0,0,0,0) 55%,rgba(70,35,15,.10) 100%)}
+
+/* ---------- chrome ---------- */
+#brand{left:96px;top:46px;font:800 32px var(--sans);letter-spacing:-.5px}
+#brand .k{color:var(--clay)}
+#crumb{left:96px;top:90px;font:600 16px var(--mono);letter-spacing:2.4px;color:var(--mute)}
+#date{right:96px;top:52px;font:600 20px var(--mono);letter-spacing:1.4px}
+#pbar{left:96px;top:132px;width:1728px;height:5px;background:rgba(20,20,20,.09);border-radius:3px}
+#pfill{height:100%;width:0;background:var(--clay);border-radius:3px}
+.tick{position:absolute;top:-4px;width:2px;height:13px;background:rgba(20,20,20,.16)}
+
+/* ---------- bottom rule ---------- */
+#foot{left:96px;top:992px;width:1728px}
+#foot .rule{height:1px;background:rgba(20,20,20,.14)}
+#foot .row{display:flex;justify-content:space-between;margin-top:14px;font:600 17px var(--mono);letter-spacing:2px;color:var(--mute)}
+#foot .row b{color:var(--ink);font-weight:700}
+
+/* ---------- item number ---------- */
+#chip{left:96px;top:196px;opacity:0}
+#chip .n{font:700 17px var(--mono);letter-spacing:3.4px;color:var(--mute)}
+#chip .big{font:800 88px/0.9 var(--sans);letter-spacing:-5px;color:var(--clay);margin-top:8px}
+
+/* ---------- headline ---------- */
+.head{left:96px;width:980px;top:336px;font:700 96px/1.04 var(--sans);letter-spacing:-3px;opacity:0}
+.head .l{display:block}
+.head i{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--clay);letter-spacing:-1px}
+.hl{position:relative;display:inline-block;z-index:0}
+.hl::before{content:"";position:absolute;left:-14px;right:-14px;bottom:8px;height:38%;background:var(--hl);z-index:-1;transform-origin:left center;transform:scaleX(var(--s,0));border-radius:6px}
+
+/* ---------- detail line under the headline ---------- */
+.det{left:96px;top:648px;width:980px;opacity:0}
+.det .row{display:flex;align-items:baseline;gap:14px;font:600 24px/1.45 var(--sans);color:#4a463e;margin-bottom:4px}
+.det .row::before{content:"";width:22px;height:2px;background:var(--clay);flex:none;transform:translateY(-7px)}
+
+/* ---------- stat card ---------- */
+.card{right:96px;top:262px;width:700px;height:466px;background:#fff;border:2px solid var(--line);border-radius:36px;
+      box-shadow:0 40px 90px rgba(0,0,0,.13);padding:40px 46px;opacity:0;overflow:hidden;
+      display:flex;flex-direction:column}
+.card .lab{font:700 17px var(--mono);letter-spacing:2.6px;color:var(--mute)}
+.card .big{font:800 124px/0.86 var(--sans);letter-spacing:-6px;margin-top:18px;transform-origin:left center}
+.card .sub{font:700 27px/1.24 var(--sans);letter-spacing:-.4px;margin-top:12px}
+.card .mini{display:flex;gap:12px;margin-top:auto}
+.card .mini > div{flex:1;background:#FAF7F2;border:1px solid var(--line);border-radius:14px;padding:11px 13px;min-width:0}
+.card .mini > div > .k{font:700 13px var(--mono);letter-spacing:1.6px;color:var(--mute)}
+.card .mini > div > .v{font:800 19px/1.15 var(--sans);letter-spacing:-.3px;margin-top:4px;overflow-wrap:anywhere}
+.bar{position:relative;height:14px;border-radius:7px;background:#EFEBE4;margin-top:22px;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--clay);border-radius:7px}
+.stamp{position:absolute;right:34px;top:30px;font:800 20px var(--mono);letter-spacing:2px;color:#fff;background:var(--red);
+       padding:9px 16px;border-radius:9px;transform:rotate(-7deg) scale(0);opacity:0;z-index:3}
+.speed{display:flex;align-items:flex-end;gap:14px;height:74px;margin-top:16px}
+.speed i{width:54px;background:#EFEBE4;border-radius:8px 8px 0 0;height:26%}
+.speed i.on{background:var(--clay)}
+.badge{position:absolute;right:34px;top:26px;width:74px;height:74px;border-radius:50%;background:var(--green);display:flex;
+       align-items:center;justify-content:center;transform:scale(0);opacity:0}
+#endcard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;height:100%}
+#endcard .mono{width:132px;height:132px;border-radius:50%;background:var(--clay);color:#fff;display:flex;align-items:center;
+       justify-content:center;font:800 56px var(--sans);letter-spacing:-3px;box-shadow:0 14px 38px rgba(184,90,58,.35)}
+#endcard .nm{font:800 44px var(--sans);letter-spacing:-1.2px}
+#endcard .tag{font:600 15px var(--mono);letter-spacing:2.4px;color:var(--mute)}
+#endcard .ch{margin-top:2px;font:800 25px var(--sans);color:#fff;background:var(--blue);padding:12px 28px;border-radius:14px}
+#endcard .cmt{font:800 24px var(--sans);color:var(--ink);border:3px solid var(--ink);border-radius:14px;padding:9px 20px;
+       box-shadow:5px 5px 0 var(--ink);background:#fff}
+#endcard .cmt b{color:var(--clay)}
+
+/* ---------- captions ---------- */
+#cap{left:180px;width:1560px;top:846px;text-align:center}
+#capin{display:inline-block;background:#fff;border-radius:24px;padding:16px 36px;box-shadow:0 14px 40px rgba(0,0,0,.13),0 0 0 2px rgba(20,20,20,.05);
+       font:800 58px/1.12 var(--sans);letter-spacing:-.8px;opacity:0;white-space:nowrap}
+#capin span{display:inline-block;color:#C9C3B9;padding-right:.17em}
+#capin span.on{color:var(--ink)}
+
+/* ---------- sticker (comment CTA) ---------- */
+.stk{background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:6px 6px 0 var(--ink);
+     padding:12px 22px;font:800 30px var(--sans);letter-spacing:-.4px;opacity:0;white-space:nowrap}
+.stk b{color:var(--clay)}
+
+#wipe{position:absolute;inset:0;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="grid" data-qa-ignore></div>
+<div class="glow" id="g1" data-qa-ignore style="width:1000px;height:760px;background:#FFC7AE;opacity:.34;left:-140px;top:420px"></div>
+<div class="glow" id="g2" data-qa-ignore style="width:820px;height:640px;background:#FFE3B0;opacity:.36;left:900px;top:600px"></div>
+
+<div id="world">
+  <div class="abs" id="chip" data-qa-ignore><div class="n" id="chipn">TOP 10</div><div class="big" id="chipb">00</div></div>
+  <div id="heads"></div>
+  <div id="dets"></div>
+  <div id="cards"></div>
+  <div class="abs stk" id="cta13" data-qa-text style="left:96px;top:746px">Comment karo <b>“GTA”</b></div>
+</div>
+
+<div id="vig" data-qa-ignore></div>
+<canvas id="wipe" width="1920" height="1080" data-qa-ignore></canvas>
+
+<div class="abs" id="brand" data-qa-chrome><span class="k">TECH</span> KHABAR</div>
+<div class="abs" id="crumb" data-qa-chrome>// 00 — INTRO</div>
+<div class="abs" id="date" data-qa-chrome>14 NOV 2026</div>
+<div class="abs" id="pbar" data-qa-chrome><div id="pfill"></div></div>
+<div class="abs" id="foot" data-qa-chrome>
+  <div class="rule"></div>
+  <div class="row"><span>TECH KHABAR</span><span>TOP 10 · <b>14 NOV 2026</b></span><span id="ftcount">01 / 14</span></div>
+</div>
+
+<div class="abs" id="cap"><div id="capin"></div></div>
+
+<script>
+/* =================== CONFIG =================== */
+const DUR = 166.1;
+const WORDS = [
+{
+"w": "Namaste",
+"s": 0.0,
+"e": 0.54,
+"line": 0
+},
+{
+"w": "doston,",
+"s": 0.54,
+"e": 1.12,
+"line": 0
+},
+{
+"w": "swagat",
+"s": 1.56,
+"e": 1.92,
+"line": 0
+},
+{
+"w": "hai",
+"s": 1.92,
+"e": 2.04,
+"line": 0
+},
+{
+"w": "aapka",
+"s": 2.04,
+"e": 2.36,
+"line": 0
+},
+{
+"w": "Tech",
+"s": 2.36,
+"e": 2.68,
+"line": 0
+},
+{
+"w": "Khabar",
+"s": 2.68,
+"e": 3.0,
+"line": 0
+},
+{
+"w": "mein,",
+"s": 3.0,
+"e": 3.14,
+"line": 0
+},
+{
+"w": "jahan",
+"s": 3.52,
+"e": 3.7,
+"line": 0
+},
+{
+"w": "milti",
+"s": 3.7,
+"e": 4.0,
+"line": 0
+},
+{
+"w": "hain",
+"s": 4.0,
+"e": 4.22,
+"line": 0
+},
+{
+"w": "tech",
+"s": 4.22,
+"e": 4.48,
+"line": 0
+},
+{
+"w": "ki",
+"s": 4.48,
+"e": 4.7,
+"line": 0
+},
+{
+"w": "sabse",
+"s": 4.7,
+"e": 5.24,
+"line": 0
+},
+{
+"w": "badi",
+"s": 5.24,
+"e": 5.6,
+"line": 0
+},
+{
+"w": "khabrein,",
+"s": 5.6,
+"e": 6.02,
+"line": 0
+},
+{
+"w": "seedhi",
+"s": 6.2,
+"e": 6.7,
+"line": 0
+},
+{
+"w": "aur",
+"s": 6.7,
+"e": 7.06,
+"line": 0
+},
+{
+"w": "simple",
+"s": 7.06,
+"e": 7.48,
+"line": 0
+},
+{
+"w": "Hinglish",
+"s": 7.48,
+"e": 7.88,
+"line": 0
+},
+{
+"w": "mein.",
+"s": 7.88,
+"e": 8.08,
+"line": 0
+},
+{
+"w": "Aaj",
+"s": 8.58,
+"e": 8.82,
+"line": 1
+},
+{
+"w": "ki",
+"s": 8.82,
+"e": 8.94,
+"line": 1
+},
+{
+"w": "video",
+"s": 8.94,
+"e": 9.18,
+"line": 1
+},
+{
+"w": "mein",
+"s": 9.18,
+"e": 9.36,
+"line": 1
+},
+{
+"w": "hain",
+"s": 9.36,
+"e": 9.62,
+"line": 1
+},
+{
+"w": "poori",
+"s": 9.62,
+"e": 9.98,
+"line": 1
+},
+{
+"w": "das",
+"s": 9.98,
+"e": 10.32,
+"line": 1
+},
+{
+"w": "badi",
+"s": 10.32,
+"e": 10.62,
+"line": 1
+},
+{
+"w": "khabrein,",
+"s": 10.62,
+"e": 11.12,
+"line": 1
+},
+{
+"w": "toh",
+"s": 11.26,
+"e": 11.48,
+"line": 1
+},
+{
+"w": "video",
+"s": 11.48,
+"e": 11.64,
+"line": 1
+},
+{
+"w": "ko",
+"s": 11.64,
+"e": 11.84,
+"line": 1
+},
+{
+"w": "end",
+"s": 11.84,
+"e": 12.14,
+"line": 1
+},
+{
+"w": "tak",
+"s": 12.14,
+"e": 12.36,
+"line": 1
+},
+{
+"w": "zaroor",
+"s": 12.36,
+"e": 12.8,
+"line": 1
+},
+{
+"w": "dekhna.",
+"s": 12.8,
+"e": 13.16,
+"line": 1
+},
+{
+"w": "Number",
+"s": 13.62,
+"e": 13.94,
+"line": 2
+},
+{
+"w": "one,",
+"s": 13.94,
+"e": 14.32,
+"line": 2
+},
+{
+"w": "Apple",
+"s": 14.8,
+"e": 15.08,
+"line": 2
+},
+{
+"w": "ne",
+"s": 15.08,
+"e": 15.26,
+"line": 2
+},
+{
+"w": "apna",
+"s": 15.26,
+"e": 15.62,
+"line": 2
+},
+{
+"w": "pehla",
+"s": 15.62,
+"e": 16.04,
+"line": 2
+},
+{
+"w": "touchscreen",
+"s": 16.04,
+"e": 16.5,
+"line": 2
+},
+{
+"w": "MacBook",
+"s": 16.5,
+"e": 17.0,
+"line": 2
+},
+{
+"w": "Pro",
+"s": 17.0,
+"e": 17.38,
+"line": 2
+},
+{
+"w": "launch",
+"s": 17.38,
+"e": 17.72,
+"line": 2
+},
+{
+"w": "kar",
+"s": 17.72,
+"e": 17.92,
+"line": 2
+},
+{
+"w": "diya",
+"s": 17.92,
+"e": 18.14,
+"line": 2
+},
+{
+"w": "hai.",
+"s": 18.14,
+"e": 18.3,
+"line": 2
+},
+{
+"w": "Same",
+"s": 18.62,
+"e": 18.9,
+"line": 2
+},
+{
+"w": "chip",
+"s": 18.9,
+"e": 19.14,
+"line": 2
+},
+{
+"w": "wale",
+"s": 19.14,
+"e": 19.42,
+"line": 2
+},
+{
+"w": "normal",
+"s": 19.42,
+"e": 19.74,
+"line": 2
+},
+{
+"w": "MacBook",
+"s": 19.74,
+"e": 20.18,
+"line": 2
+},
+{
+"w": "Pro",
+"s": 20.18,
+"e": 20.5,
+"line": 2
+},
+{
+"w": "se",
+"s": 20.5,
+"e": 20.64,
+"line": 2
+},
+{
+"w": "ye",
+"s": 20.96,
+"e": 21.02,
+"line": 2
+},
+{
+"w": "lagbhag",
+"s": 21.02,
+"e": 21.36,
+"line": 2
+},
+{
+"w": "400",
+"s": 21.36,
+"e": 21.72,
+"line": 2
+},
+{
+"w": "dollar",
+"s": 21.72,
+"e": 22.12,
+"line": 2
+},
+{
+"w": "mehnga",
+"s": 22.12,
+"e": 22.54,
+"line": 2
+},
+{
+"w": "hai,",
+"s": 22.54,
+"e": 22.68,
+"line": 2
+},
+{
+"w": "aur",
+"s": 22.96,
+"e": 23.06,
+"line": 2
+},
+{
+"w": "deliveries",
+"s": 23.06,
+"e": 23.42,
+"line": 2
+},
+{
+"w": "6",
+"s": 23.42,
+"e": 23.92,
+"line": 2
+},
+{
+"w": "November",
+"s": 23.92,
+"e": 24.24,
+"line": 2
+},
+{
+"w": "se",
+"s": 24.24,
+"e": 24.48,
+"line": 2
+},
+{
+"w": "shuru",
+"s": 24.48,
+"e": 24.74,
+"line": 2
+},
+{
+"w": "ho",
+"s": 24.74,
+"e": 24.9,
+"line": 2
+},
+{
+"w": "chuki",
+"s": 24.9,
+"e": 25.14,
+"line": 2
+},
+{
+"w": "hain.",
+"s": 25.14,
+"e": 25.36,
+"line": 2
+},
+{
+"w": "Number",
+"s": 25.56,
+"e": 26.04,
+"line": 3
+},
+{
+"w": "two,",
+"s": 26.04,
+"e": 26.46,
+"line": 3
+},
+{
+"w": "GTA6",
+"s": 26.88,
+"e": 27.52,
+"line": 3
+},
+{
+"w": "ke",
+"s": 27.52,
+"e": 27.72,
+"line": 3
+},
+{
+"w": "fans",
+"s": 27.72,
+"e": 28.0,
+"line": 3
+},
+{
+"w": "ke",
+"s": 28.0,
+"e": 28.16,
+"line": 3
+},
+{
+"w": "liye",
+"s": 28.16,
+"e": 28.34,
+"line": 3
+},
+{
+"w": "bohot",
+"s": 28.34,
+"e": 28.86,
+"line": 3
+},
+{
+"w": "badi",
+"s": 28.86,
+"e": 29.06,
+"line": 3
+},
+{
+"w": "khabar.",
+"s": 29.06,
+"e": 29.42,
+"line": 3
+},
+{
+"w": "10",
+"s": 29.42,
+"e": 29.98,
+"line": 3
+},
+{
+"w": "November",
+"s": 29.98,
+"e": 30.36,
+"line": 3
+},
+{
+"w": "se",
+"s": 30.36,
+"e": 30.6,
+"line": 3
+},
+{
+"w": "aap",
+"s": 30.6,
+"e": 30.96,
+"line": 3
+},
+{
+"w": "game",
+"s": 30.96,
+"e": 31.16,
+"line": 3
+},
+{
+"w": "preload",
+"s": 31.16,
+"e": 31.7,
+"line": 3
+},
+{
+"w": "kar",
+"s": 31.7,
+"e": 31.86,
+"line": 3
+},
+{
+"w": "sakte",
+"s": 31.86,
+"e": 32.16,
+"line": 3
+},
+{
+"w": "ho.",
+"s": 32.16,
+"e": 32.34,
+"line": 3
+},
+{
+"w": "Game",
+"s": 32.66,
+"e": 32.94,
+"line": 3
+},
+{
+"w": "ka",
+"s": 32.94,
+"e": 33.16,
+"line": 3
+},
+{
+"w": "size",
+"s": 33.16,
+"e": 33.42,
+"line": 3
+},
+{
+"w": "hai",
+"s": 33.42,
+"e": 33.66,
+"line": 3
+},
+{
+"w": "212",
+"s": 33.66,
+"e": 34.42,
+"line": 3
+},
+{
+"w": "GB,",
+"s": 34.42,
+"e": 34.92,
+"line": 3
+},
+{
+"w": "toh",
+"s": 35.22,
+"e": 35.56,
+"line": 3
+},
+{
+"w": "storage",
+"s": 35.56,
+"e": 35.82,
+"line": 3
+},
+{
+"w": "abhi",
+"s": 35.82,
+"e": 36.28,
+"line": 3
+},
+{
+"w": "se",
+"s": 36.28,
+"e": 36.38,
+"line": 3
+},
+{
+"w": "khali",
+"s": 36.38,
+"e": 36.62,
+"line": 3
+},
+{
+"w": "kar",
+"s": 36.62,
+"e": 36.8,
+"line": 3
+},
+{
+"w": "lo.",
+"s": 36.8,
+"e": 36.98,
+"line": 3
+},
+{
+"w": "Launch",
+"s": 37.28,
+"e": 37.66,
+"line": 3
+},
+{
+"w": "hai",
+"s": 37.66,
+"e": 37.86,
+"line": 3
+},
+{
+"w": "19",
+"s": 37.86,
+"e": 38.2,
+"line": 3
+},
+{
+"w": "November",
+"s": 38.2,
+"e": 38.68,
+"line": 3
+},
+{
+"w": "ko.",
+"s": 38.68,
+"e": 38.96,
+"line": 3
+},
+{
+"w": "Number",
+"s": 39.36,
+"e": 39.58,
+"line": 4
+},
+{
+"w": "three,",
+"s": 39.58,
+"e": 40.0,
+"line": 4
+},
+{
+"w": "AMD",
+"s": 40.4,
+"e": 40.86,
+"line": 4
+},
+{
+"w": "ne",
+"s": 40.86,
+"e": 41.04,
+"line": 4
+},
+{
+"w": "3",
+"s": 41.04,
+"e": 41.34,
+"line": 4
+},
+{
+"w": "November",
+"s": 41.34,
+"e": 41.74,
+"line": 4
+},
+{
+"w": "ko",
+"s": 41.74,
+"e": 42.02,
+"line": 4
+},
+{
+"w": "apne",
+"s": 42.02,
+"e": 42.54,
+"line": 4
+},
+{
+"w": "third",
+"s": 42.54,
+"e": 43.02,
+"line": 4
+},
+{
+"w": "quarter",
+"s": 43.02,
+"e": 43.36,
+"line": 4
+},
+{
+"w": "ke",
+"s": 43.36,
+"e": 43.54,
+"line": 4
+},
+{
+"w": "official",
+"s": 43.54,
+"e": 43.96,
+"line": 4
+},
+{
+"w": "results",
+"s": 43.96,
+"e": 44.44,
+"line": 4
+},
+{
+"w": "jaari",
+"s": 44.44,
+"e": 44.72,
+"line": 4
+},
+{
+"w": "kiye.",
+"s": 44.72,
+"e": 45.06,
+"line": 4
+},
+{
+"w": "Number",
+"s": 45.34,
+"e": 45.64,
+"line": 5
+},
+{
+"w": "four,",
+"s": 45.64,
+"e": 46.06,
+"line": 5
+},
+{
+"w": "China",
+"s": 46.5,
+"e": 46.7,
+"line": 5
+},
+{
+"w": "ne",
+"s": 46.7,
+"e": 46.96,
+"line": 5
+},
+{
+"w": "SoftBank",
+"s": 46.96,
+"e": 47.64,
+"line": 5
+},
+{
+"w": "ka",
+"s": 47.64,
+"e": 47.8,
+"line": 5
+},
+{
+"w": "ek",
+"s": 47.8,
+"e": 48.0,
+"line": 5
+},
+{
+"w": "bada",
+"s": 48.0,
+"e": 48.32,
+"line": 5
+},
+{
+"w": "deal",
+"s": 48.32,
+"e": 48.62,
+"line": 5
+},
+{
+"w": "rok",
+"s": 48.62,
+"e": 48.84,
+"line": 5
+},
+{
+"w": "diya",
+"s": 48.84,
+"e": 49.14,
+"line": 5
+},
+{
+"w": "hai.",
+"s": 49.14,
+"e": 49.24,
+"line": 5
+},
+{
+"w": "SoftBank",
+"s": 49.58,
+"e": 50.18,
+"line": 5
+},
+{
+"w": "ABB",
+"s": 50.18,
+"e": 50.92,
+"line": 5
+},
+{
+"w": "ka",
+"s": 50.92,
+"e": 51.06,
+"line": 5
+},
+{
+"w": "robotics",
+"s": 51.06,
+"e": 51.44,
+"line": 5
+},
+{
+"w": "business",
+"s": 51.44,
+"e": 51.9,
+"line": 5
+},
+{
+"w": "kharidna",
+"s": 51.9,
+"e": 52.28,
+"line": 5
+},
+{
+"w": "chahta",
+"s": 52.28,
+"e": 52.66,
+"line": 5
+},
+{
+"w": "tha.",
+"s": 52.66,
+"e": 52.84,
+"line": 5
+},
+{
+"w": "ABB",
+"s": 53.06,
+"e": 53.56,
+"line": 5
+},
+{
+"w": "ne",
+"s": 53.56,
+"e": 53.7,
+"line": 5
+},
+{
+"w": "5",
+"s": 53.7,
+"e": 54.02,
+"line": 5
+},
+{
+"w": "November",
+"s": 54.02,
+"e": 54.4,
+"line": 5
+},
+{
+"w": "ko",
+"s": 54.4,
+"e": 54.62,
+"line": 5
+},
+{
+"w": "iss",
+"s": 54.62,
+"e": 54.76,
+"line": 5
+},
+{
+"w": "se",
+"s": 54.76,
+"e": 54.86,
+"line": 5
+},
+{
+"w": "confirm",
+"s": 54.86,
+"e": 55.16,
+"line": 5
+},
+{
+"w": "kiya,",
+"s": 55.16,
+"e": 55.54,
+"line": 5
+},
+{
+"w": "lekin",
+"s": 55.54,
+"e": 56.06,
+"line": 5
+},
+{
+"w": "reports",
+"s": 56.06,
+"e": 56.46,
+"line": 5
+},
+{
+"w": "mein",
+"s": 56.46,
+"e": 56.7,
+"line": 5
+},
+{
+"w": "alag",
+"s": 56.7,
+"e": 57.14,
+"line": 5
+},
+{
+"w": "alag",
+"s": 57.14,
+"e": 57.3,
+"line": 5
+},
+{
+"w": "bataaya",
+"s": 57.3,
+"e": 57.64,
+"line": 5
+},
+{
+"w": "gaya",
+"s": 57.64,
+"e": 57.88,
+"line": 5
+},
+{
+"w": "hai",
+"s": 57.88,
+"e": 58.08,
+"line": 5
+},
+{
+"w": "ki",
+"s": 58.08,
+"e": 58.44,
+"line": 5
+},
+{
+"w": "rokne",
+"s": 58.44,
+"e": 58.9,
+"line": 5
+},
+{
+"w": "wali",
+"s": 58.9,
+"e": 59.16,
+"line": 5
+},
+{
+"w": "body",
+"s": 59.16,
+"e": 59.48,
+"line": 5
+},
+{
+"w": "kaunsi",
+"s": 59.48,
+"e": 60.06,
+"line": 5
+},
+{
+"w": "thi.",
+"s": 60.06,
+"e": 60.2,
+"line": 5
+},
+{
+"w": "Number",
+"s": 60.58,
+"e": 60.84,
+"line": 6
+},
+{
+"w": "five,",
+"s": 60.84,
+"e": 61.34,
+"line": 6
+},
+{
+"w": "Blue",
+"s": 61.62,
+"e": 61.94,
+"line": 6
+},
+{
+"w": "Origin",
+"s": 61.94,
+"e": 62.32,
+"line": 6
+},
+{
+"w": "ka",
+"s": 62.32,
+"e": 62.54,
+"line": 6
+},
+{
+"w": "New",
+"s": 62.54,
+"e": 62.84,
+"line": 6
+},
+{
+"w": "Glenn",
+"s": 62.84,
+"e": 63.1,
+"line": 6
+},
+{
+"w": "rocket",
+"s": 63.1,
+"e": 63.48,
+"line": 6
+},
+{
+"w": "ab",
+"s": 63.48,
+"e": 63.84,
+"line": 6
+},
+{
+"w": "dobara",
+"s": 63.84,
+"e": 64.3,
+"line": 6
+},
+{
+"w": "udaan",
+"s": 64.3,
+"e": 64.64,
+"line": 6
+},
+{
+"w": "January",
+"s": 64.64,
+"e": 65.02,
+"line": 6
+},
+{
+"w": "2027",
+"s": 65.02,
+"e": 66.02,
+"line": 6
+},
+{
+"w": "tak",
+"s": 66.02,
+"e": 66.28,
+"line": 6
+},
+{
+"w": "nahi",
+"s": 66.28,
+"e": 66.62,
+"line": 6
+},
+{
+"w": "bharega.",
+"s": 66.62,
+"e": 66.96,
+"line": 6
+},
+{
+"w": "Reuters",
+"s": 67.24,
+"e": 67.64,
+"line": 6
+},
+{
+"w": "ke",
+"s": 67.64,
+"e": 67.84,
+"line": 6
+},
+{
+"w": "mutabik",
+"s": 67.84,
+"e": 68.26,
+"line": 6
+},
+{
+"w": "ye",
+"s": 68.26,
+"e": 68.62,
+"line": 6
+},
+{
+"w": "baat",
+"s": 68.62,
+"e": 68.9,
+"line": 6
+},
+{
+"w": "ek",
+"s": 68.9,
+"e": 69.0,
+"line": 6
+},
+{
+"w": "internal",
+"s": 69.0,
+"e": 69.48,
+"line": 6
+},
+{
+"w": "memo",
+"s": 69.48,
+"e": 69.8,
+"line": 6
+},
+{
+"w": "mein",
+"s": 69.8,
+"e": 69.86,
+"line": 6
+},
+{
+"w": "likhi",
+"s": 69.8,
+"e": 70.26,
+"line": 6
+},
+{
+"w": "gayi",
+"s": 70.26,
+"e": 70.38,
+"line": 6
+},
+{
+"w": "hai.",
+"s": 70.38,
+"e": 70.58,
+"line": 6
+},
+{
+"w": "Number",
+"s": 70.9,
+"e": 71.2,
+"line": 7
+},
+{
+"w": "six,",
+"s": 71.2,
+"e": 71.6,
+"line": 7
+},
+{
+"w": "AI",
+"s": 72.0,
+"e": 72.32,
+"line": 7
+},
+{
+"w": "se",
+"s": 72.38,
+"e": 72.54,
+"line": 7
+},
+{
+"w": "nakal",
+"s": 72.54,
+"e": 73.0,
+"line": 7
+},
+{
+"w": "ka",
+"s": 73.0,
+"e": 73.16,
+"line": 7
+},
+{
+"w": "fraud.",
+"s": 73.16,
+"e": 73.48,
+"line": 7
+},
+{
+"w": "America",
+"s": 73.88,
+"e": 74.18,
+"line": 7
+},
+{
+"w": "mein",
+"s": 74.18,
+"e": 74.48,
+"line": 7
+},
+{
+"w": "teen",
+"s": 74.48,
+"e": 74.78,
+"line": 7
+},
+{
+"w": "logon",
+"s": 74.78,
+"e": 75.08,
+"line": 7
+},
+{
+"w": "par",
+"s": 75.08,
+"e": 75.3,
+"line": 7
+},
+{
+"w": "charges",
+"s": 75.3,
+"e": 75.6,
+"line": 7
+},
+{
+"w": "lage",
+"s": 75.6,
+"e": 75.98,
+"line": 7
+},
+{
+"w": "hain",
+"s": 75.98,
+"e": 76.32,
+"line": 7
+},
+{
+"w": "ki",
+"s": 76.32,
+"e": 76.52,
+"line": 7
+},
+{
+"w": "unhon",
+"s": 76.52,
+"e": 76.8,
+"line": 7
+},
+{
+"w": "ne",
+"s": 76.8,
+"e": 76.9,
+"line": 7
+},
+{
+"w": "AI",
+"s": 76.9,
+"e": 77.3,
+"line": 7
+},
+{
+"w": "se",
+"s": 77.42,
+"e": 77.52,
+"line": 7
+},
+{
+"w": "CEOs",
+"s": 77.52,
+"e": 78.04,
+"line": 7
+},
+{
+"w": "aur",
+"s": 78.04,
+"e": 78.58,
+"line": 7
+},
+{
+"w": "vakilon",
+"s": 78.58,
+"e": 79.08,
+"line": 7
+},
+{
+"w": "ki",
+"s": 79.08,
+"e": 79.2,
+"line": 7
+},
+{
+"w": "nakal",
+"s": 79.2,
+"e": 79.6,
+"line": 7
+},
+{
+"w": "karke",
+"s": 79.6,
+"e": 79.94,
+"line": 7
+},
+{
+"w": "lagbhag",
+"s": 79.94,
+"e": 80.64,
+"line": 7
+},
+{
+"w": "139",
+"s": 80.64,
+"e": 81.68,
+"line": 7
+},
+{
+"w": "million",
+"s": 81.68,
+"e": 82.04,
+"line": 7
+},
+{
+"w": "dollar",
+"s": 82.04,
+"e": 82.4,
+"line": 7
+},
+{
+"w": "churai.",
+"s": 82.4,
+"e": 82.76,
+"line": 7
+},
+{
+"w": "Dhyan",
+"s": 83.1,
+"e": 83.34,
+"line": 7
+},
+{
+"w": "rahe,",
+"s": 83.34,
+"e": 83.62,
+"line": 7
+},
+{
+"w": "abhi",
+"s": 83.62,
+"e": 84.12,
+"line": 7
+},
+{
+"w": "sirf",
+"s": 84.12,
+"e": 84.42,
+"line": 7
+},
+{
+"w": "charges",
+"s": 84.42,
+"e": 84.72,
+"line": 7
+},
+{
+"w": "lage",
+"s": 84.72,
+"e": 85.1,
+"line": 7
+},
+{
+"w": "hain,",
+"s": 85.1,
+"e": 85.22,
+"line": 7
+},
+{
+"w": "kuch",
+"s": 85.22,
+"e": 85.64,
+"line": 7
+},
+{
+"w": "sabit",
+"s": 85.64,
+"e": 86.06,
+"line": 7
+},
+{
+"w": "nahi",
+"s": 86.06,
+"e": 86.32,
+"line": 7
+},
+{
+"w": "hua",
+"s": 86.32,
+"e": 86.54,
+"line": 7
+},
+{
+"w": "hai.",
+"s": 86.54,
+"e": 86.66,
+"line": 7
+},
+{
+"w": "Number",
+"s": 87.0,
+"e": 87.28,
+"line": 8
+},
+{
+"w": "seven,",
+"s": 87.28,
+"e": 87.7,
+"line": 8
+},
+{
+"w": "Japan",
+"s": 88.12,
+"e": 88.54,
+"line": 8
+},
+{
+"w": "ki",
+"s": 88.54,
+"e": 88.74,
+"line": 8
+},
+{
+"w": "furniture",
+"s": 88.74,
+"e": 89.02,
+"line": 8
+},
+{
+"w": "company",
+"s": 89.02,
+"e": 89.48,
+"line": 8
+},
+{
+"w": "Nitori",
+"s": 89.48,
+"e": 90.14,
+"line": 8
+},
+{
+"w": "ka",
+"s": 90.14,
+"e": 90.24,
+"line": 8
+},
+{
+"w": "data",
+"s": 90.24,
+"e": 90.54,
+"line": 8
+},
+{
+"w": "breach",
+"s": 90.54,
+"e": 90.84,
+"line": 8
+},
+{
+"w": "hua",
+"s": 90.84,
+"e": 91.12,
+"line": 8
+},
+{
+"w": "hai,",
+"s": 91.12,
+"e": 91.26,
+"line": 8
+},
+{
+"w": "jisme",
+"s": 91.64,
+"e": 91.86,
+"line": 8
+},
+{
+"w": "saadhe",
+"s": 91.86,
+"e": 92.3,
+"line": 8
+},
+{
+"w": "37",
+"s": 92.3,
+"e": 92.72,
+"line": 8
+},
+{
+"w": "million",
+"s": 92.72,
+"e": 93.16,
+"line": 8
+},
+{
+"w": "tak",
+"s": 93.16,
+"e": 93.42,
+"line": 8
+},
+{
+"w": "customer",
+"s": 93.42,
+"e": 93.84,
+"line": 8
+},
+{
+"w": "records",
+"s": 93.84,
+"e": 94.26,
+"line": 8
+},
+{
+"w": "chori",
+"s": 94.26,
+"e": 94.6,
+"line": 8
+},
+{
+"w": "hue",
+"s": 94.6,
+"e": 94.88,
+"line": 8
+},
+{
+"w": "hai.",
+"s": 94.88,
+"e": 94.94,
+"line": 8
+},
+{
+"w": "Company",
+"s": 95.18,
+"e": 95.48,
+"line": 8
+},
+{
+"w": "ke",
+"s": 95.48,
+"e": 95.66,
+"line": 8
+},
+{
+"w": "mutabik",
+"s": 95.66,
+"e": 96.12,
+"line": 8
+},
+{
+"w": "passwords",
+"s": 96.12,
+"e": 96.68,
+"line": 8
+},
+{
+"w": "aur",
+"s": 96.68,
+"e": 97.14,
+"line": 8
+},
+{
+"w": "card",
+"s": 97.14,
+"e": 97.44,
+"line": 8
+},
+{
+"w": "details",
+"s": 97.44,
+"e": 97.8,
+"line": 8
+},
+{
+"w": "surakshit",
+"s": 97.8,
+"e": 98.38,
+"line": 8
+},
+{
+"w": "hain.",
+"s": 98.38,
+"e": 98.58,
+"line": 8
+},
+{
+"w": "Number",
+"s": 98.82,
+"e": 99.22,
+"line": 9
+},
+{
+"w": "eight,",
+"s": 99.22,
+"e": 99.68,
+"line": 9
+},
+{
+"w": "Paris",
+"s": 100.16,
+"e": 100.28,
+"line": 9
+},
+{
+"w": "mein",
+"s": 100.28,
+"e": 100.52,
+"line": 9
+},
+{
+"w": "9",
+"s": 100.52,
+"e": 100.84,
+"line": 9
+},
+{
+"w": "November",
+"s": 100.84,
+"e": 101.22,
+"line": 9
+},
+{
+"w": "ko",
+"s": 101.22,
+"e": 101.46,
+"line": 9
+},
+{
+"w": "AI",
+"s": 101.46,
+"e": 102.06,
+"line": 9
+},
+{
+"w": "safety",
+"s": 102.1,
+"e": 102.4,
+"line": 9
+},
+{
+"w": "par",
+"s": 102.4,
+"e": 102.64,
+"line": 9
+},
+{
+"w": "ek",
+"s": 102.64,
+"e": 102.82,
+"line": 9
+},
+{
+"w": "meeting",
+"s": 102.82,
+"e": 103.12,
+"line": 9
+},
+{
+"w": "hui,",
+"s": 103.12,
+"e": 103.44,
+"line": 9
+},
+{
+"w": "Paris",
+"s": 103.62,
+"e": 104.02,
+"line": 9
+},
+{
+"w": "Call",
+"s": 104.02,
+"e": 104.32,
+"line": 9
+},
+{
+"w": "for",
+"s": 104.32,
+"e": 104.58,
+"line": 9
+},
+{
+"w": "AI",
+"s": 104.58,
+"e": 104.98,
+"line": 9
+},
+{
+"w": "Safety,",
+"s": 105.02,
+"e": 105.38,
+"line": 9
+},
+{
+"w": "jisme",
+"s": 105.38,
+"e": 106.04,
+"line": 9
+},
+{
+"w": "lagbhag",
+"s": 106.04,
+"e": 106.38,
+"line": 9
+},
+{
+"w": "50",
+"s": 106.38,
+"e": 106.72,
+"line": 9
+},
+{
+"w": "participants",
+"s": 106.72,
+"e": 107.38,
+"line": 9
+},
+{
+"w": "thi.",
+"s": 107.38,
+"e": 107.6,
+"line": 9
+},
+{
+"w": "Ye",
+"s": 107.96,
+"e": 108.16,
+"line": 9
+},
+{
+"w": "voluntary",
+"s": 108.16,
+"e": 108.56,
+"line": 9
+},
+{
+"w": "hai,",
+"s": 108.56,
+"e": 108.96,
+"line": 9
+},
+{
+"w": "yani",
+"s": 109.2,
+"e": 109.4,
+"line": 9
+},
+{
+"w": "kanuni",
+"s": 109.4,
+"e": 109.88,
+"line": 9
+},
+{
+"w": "tor",
+"s": 109.88,
+"e": 110.14,
+"line": 9
+},
+{
+"w": "par",
+"s": 110.14,
+"e": 110.36,
+"line": 9
+},
+{
+"w": "kisi",
+"s": 110.36,
+"e": 110.58,
+"line": 9
+},
+{
+"w": "ko",
+"s": 110.58,
+"e": 110.76,
+"line": 9
+},
+{
+"w": "baandhata",
+"s": 110.76,
+"e": 111.22,
+"line": 9
+},
+{
+"w": "nahi.",
+"s": 111.22,
+"e": 111.46,
+"line": 9
+},
+{
+"w": "Number",
+"s": 111.46,
+"e": 112.16,
+"line": 10
+},
+{
+"w": "nine,",
+"s": 112.16,
+"e": 112.68,
+"line": 10
+},
+{
+"w": "Google",
+"s": 113.0,
+"e": 113.32,
+"line": 10
+},
+{
+"w": "ka",
+"s": 113.32,
+"e": 113.6,
+"line": 10
+},
+{
+"w": "naya",
+"s": 113.6,
+"e": 113.92,
+"line": 10
+},
+{
+"w": "model,",
+"s": 113.92,
+"e": 114.2,
+"line": 10
+},
+{
+"w": "Gemini",
+"s": 114.52,
+"e": 114.88,
+"line": 10
+},
+{
+"w": "4",
+"s": 114.88,
+"e": 115.18,
+"line": 10
+},
+{
+"w": "Carbon,",
+"s": 115.18,
+"e": 115.58,
+"line": 10
+},
+{
+"w": "10",
+"s": 115.58,
+"e": 116.16,
+"line": 10
+},
+{
+"w": "November",
+"s": 116.16,
+"e": 116.52,
+"line": 10
+},
+{
+"w": "ko",
+"s": 116.52,
+"e": 116.76,
+"line": 10
+},
+{
+"w": "sab",
+"s": 116.76,
+"e": 117.1,
+"line": 10
+},
+{
+"w": "ke",
+"s": 117.1,
+"e": 117.28,
+"line": 10
+},
+{
+"w": "liye",
+"s": 117.28,
+"e": 117.46,
+"line": 10
+},
+{
+"w": "aa",
+"s": 117.46,
+"e": 117.59,
+"line": 10
+},
+{
+"w": "gaya",
+"s": 117.59,
+"e": 117.72,
+"line": 10
+},
+{
+"w": "hai.",
+"s": 117.72,
+"e": 117.92,
+"line": 10
+},
+{
+"w": "Pricing",
+"s": 118.14,
+"e": 118.62,
+"line": 10
+},
+{
+"w": "ke",
+"s": 118.62,
+"e": 118.78,
+"line": 10
+},
+{
+"w": "liye",
+"s": 118.78,
+"e": 118.96,
+"line": 10
+},
+{
+"w": "Google",
+"s": 118.96,
+"e": 119.24,
+"line": 10
+},
+{
+"w": "ka",
+"s": 119.24,
+"e": 119.46,
+"line": 10
+},
+{
+"w": "official",
+"s": 119.46,
+"e": 119.88,
+"line": 10
+},
+{
+"w": "page",
+"s": 119.88,
+"e": 120.24,
+"line": 10
+},
+{
+"w": "zarur",
+"s": 120.24,
+"e": 120.62,
+"line": 10
+},
+{
+"w": "check",
+"s": 120.62,
+"e": 120.87,
+"line": 10
+},
+{
+"w": "karna.",
+"s": 120.87,
+"e": 121.12,
+"line": 10
+},
+{
+"w": "Aur",
+"s": 121.48,
+"e": 121.76,
+"line": 11
+},
+{
+"w": "number",
+"s": 121.76,
+"e": 122.14,
+"line": 11
+},
+{
+"w": "ten,",
+"s": 122.14,
+"e": 122.76,
+"line": 11
+},
+{
+"w": "Anthropic",
+"s": 123.06,
+"e": 123.54,
+"line": 11
+},
+{
+"w": "ne",
+"s": 123.54,
+"e": 123.78,
+"line": 11
+},
+{
+"w": "9",
+"s": 123.78,
+"e": 124.1,
+"line": 11
+},
+{
+"w": "November",
+"s": 124.1,
+"e": 124.48,
+"line": 11
+},
+{
+"w": "ko",
+"s": 124.48,
+"e": 124.72,
+"line": 11
+},
+{
+"w": "Fable",
+"s": 124.72,
+"e": 125.32,
+"line": 11
+},
+{
+"w": "5.2",
+"s": 125.32,
+"e": 126.18,
+"line": 11
+},
+{
+"w": "aur",
+"s": 126.18,
+"e": 126.52,
+"line": 11
+},
+{
+"w": "Mythos",
+"s": 126.52,
+"e": 126.94,
+"line": 11
+},
+{
+"w": "5.2",
+"s": 126.94,
+"e": 127.68,
+"line": 11
+},
+{
+"w": "launch",
+"s": 127.68,
+"e": 128.04,
+"line": 11
+},
+{
+"w": "kiye.",
+"s": 128.04,
+"e": 128.36,
+"line": 11
+},
+{
+"w": "Company",
+"s": 128.58,
+"e": 128.9,
+"line": 11
+},
+{
+"w": "ke",
+"s": 128.9,
+"e": 129.1,
+"line": 11
+},
+{
+"w": "mutabik",
+"s": 129.1,
+"e": 129.56,
+"line": 11
+},
+{
+"w": "ye",
+"s": 129.56,
+"e": 129.88,
+"line": 11
+},
+{
+"w": "pichle",
+"s": 129.88,
+"e": 130.22,
+"line": 11
+},
+{
+"w": "5.1",
+"s": 130.22,
+"e": 131.1,
+"line": 11
+},
+{
+"w": "se",
+"s": 131.1,
+"e": 131.26,
+"line": 11
+},
+{
+"w": "30%",
+"s": 131.26,
+"e": 131.72,
+"line": 11
+},
+{
+"w": "tak",
+"s": 132.08,
+"e": 132.3,
+"line": 11
+},
+{
+"w": "tez",
+"s": 132.3,
+"e": 132.66,
+"line": 11
+},
+{
+"w": "hain.",
+"s": 132.66,
+"e": 133.08,
+"line": 11
+},
+{
+"w": "Toh",
+"s": 133.12,
+"e": 133.32,
+"line": 12
+},
+{
+"w": "dosto,",
+"s": 133.32,
+"e": 133.76,
+"line": 12
+},
+{
+"w": "ye",
+"s": 134.2,
+"e": 134.44,
+"line": 12
+},
+{
+"w": "thi",
+"s": 134.44,
+"e": 134.64,
+"line": 12
+},
+{
+"w": "aaj",
+"s": 134.64,
+"e": 135.08,
+"line": 12
+},
+{
+"w": "ki",
+"s": 135.08,
+"e": 135.24,
+"line": 12
+},
+{
+"w": "10",
+"s": 135.24,
+"e": 135.7,
+"line": 12
+},
+{
+"w": "badi",
+"s": 135.7,
+"e": 136.14,
+"line": 12
+},
+{
+"w": "tech",
+"s": 136.14,
+"e": 136.4,
+"line": 12
+},
+{
+"w": "khabrein.",
+"s": 136.4,
+"e": 136.72,
+"line": 12
+},
+{
+"w": "Aapko",
+"s": 137.1,
+"e": 137.62,
+"line": 12
+},
+{
+"w": "inme",
+"s": 137.62,
+"e": 137.84,
+"line": 12
+},
+{
+"w": "se",
+"s": 137.84,
+"e": 138.0,
+"line": 12
+},
+{
+"w": "kaunsi",
+"s": 138.0,
+"e": 138.5,
+"line": 12
+},
+{
+"w": "khabar",
+"s": 138.5,
+"e": 138.76,
+"line": 12
+},
+{
+"w": "sabse",
+"s": 138.76,
+"e": 139.22,
+"line": 12
+},
+{
+"w": "zyada",
+"s": 139.22,
+"e": 139.46,
+"line": 12
+},
+{
+"w": "pasand",
+"s": 139.46,
+"e": 139.7,
+"line": 12
+},
+{
+"w": "aayi,",
+"s": 139.7,
+"e": 139.94,
+"line": 12
+},
+{
+"w": "comment",
+"s": 139.94,
+"e": 140.56,
+"line": 12
+},
+{
+"w": "mein",
+"s": 140.56,
+"e": 140.82,
+"line": 12
+},
+{
+"w": "zarur",
+"s": 140.82,
+"e": 141.22,
+"line": 12
+},
+{
+"w": "batana.",
+"s": 141.22,
+"e": 141.56,
+"line": 12
+},
+{
+"w": "Aur",
+"s": 141.96,
+"e": 142.16,
+"line": 13
+},
+{
+"w": "agar",
+"s": 142.16,
+"e": 142.46,
+"line": 13
+},
+{
+"w": "GTA6",
+"s": 142.46,
+"e": 143.3,
+"line": 13
+},
+{
+"w": "ke",
+"s": 143.3,
+"e": 143.48,
+"line": 13
+},
+{
+"w": "liye",
+"s": 143.48,
+"e": 143.66,
+"line": 13
+},
+{
+"w": "aap",
+"s": 143.66,
+"e": 143.8,
+"line": 13
+},
+{
+"w": "excited",
+"s": 143.8,
+"e": 144.16,
+"line": 13
+},
+{
+"w": "ho,",
+"s": 144.16,
+"e": 144.46,
+"line": 13
+},
+{
+"w": "to",
+"s": 144.8,
+"e": 144.86,
+"line": 13
+},
+{
+"w": "comment",
+"s": 144.84,
+"e": 145.18,
+"line": 13
+},
+{
+"w": "mein",
+"s": 145.18,
+"e": 145.4,
+"line": 13
+},
+{
+"w": "likho",
+"s": 145.4,
+"e": 145.68,
+"line": 13
+},
+{
+"w": "GTA.",
+"s": 145.68,
+"e": 146.44,
+"line": 13
+},
+{
+"w": "Agar",
+"s": 147.02,
+"e": 147.32,
+"line": 13
+},
+{
+"w": "video",
+"s": 147.32,
+"e": 147.54,
+"line": 13
+},
+{
+"w": "pasand",
+"s": 147.54,
+"e": 147.83,
+"line": 13
+},
+{
+"w": "aayi",
+"s": 147.83,
+"e": 148.12,
+"line": 13
+},
+{
+"w": "ho",
+"s": 148.12,
+"e": 148.36,
+"line": 13
+},
+{
+"w": "to",
+"s": 148.36,
+"e": 148.54,
+"line": 13
+},
+{
+"w": "like",
+"s": 148.54,
+"e": 148.88,
+"line": 13
+},
+{
+"w": "zarur",
+"s": 148.88,
+"e": 149.26,
+"line": 13
+},
+{
+"w": "karo,",
+"s": 149.26,
+"e": 149.54,
+"line": 13
+},
+{
+"w": "apne",
+"s": 149.78,
+"e": 150.04,
+"line": 13
+},
+{
+"w": "dosto",
+"s": 150.04,
+"e": 150.5,
+"line": 13
+},
+{
+"w": "ke",
+"s": 150.5,
+"e": 150.62,
+"line": 13
+},
+{
+"w": "saath",
+"s": 150.62,
+"e": 150.9,
+"line": 13
+},
+{
+"w": "share",
+"s": 150.9,
+"e": 151.16,
+"line": 13
+},
+{
+"w": "karo,",
+"s": 151.16,
+"e": 151.7,
+"line": 13
+},
+{
+"w": "aur",
+"s": 151.82,
+"e": 151.92,
+"line": 13
+},
+{
+"w": "Tech",
+"s": 151.92,
+"e": 152.22,
+"line": 13
+},
+{
+"w": "Khabar",
+"s": 152.22,
+"e": 152.54,
+"line": 13
+},
+{
+"w": "channel",
+"s": 152.54,
+"e": 152.8,
+"line": 13
+},
+{
+"w": "ko",
+"s": 152.8,
+"e": 152.98,
+"line": 13
+},
+{
+"w": "subscribe",
+"s": 152.98,
+"e": 153.4,
+"line": 13
+},
+{
+"w": "karna",
+"s": 153.4,
+"e": 153.88,
+"line": 13
+},
+{
+"w": "mat",
+"s": 153.88,
+"e": 154.06,
+"line": 13
+},
+{
+"w": "bhoolna.",
+"s": 154.06,
+"e": 154.42,
+"line": 13
+},
+{
+"w": "Saath",
+"s": 154.74,
+"e": 155.14,
+"line": 13
+},
+{
+"w": "mein",
+"s": 155.14,
+"e": 155.28,
+"line": 13
+},
+{
+"w": "bell",
+"s": 155.28,
+"e": 155.6,
+"line": 13
+},
+{
+"w": "icon",
+"s": 155.6,
+"e": 155.92,
+"line": 13
+},
+{
+"w": "bhi",
+"s": 155.92,
+"e": 156.1,
+"line": 13
+},
+{
+"w": "dabana,",
+"s": 156.1,
+"e": 156.42,
+"line": 13
+},
+{
+"w": "taaki",
+"s": 156.78,
+"e": 157.02,
+"line": 13
+},
+{
+"w": "har",
+"s": 157.02,
+"e": 157.32,
+"line": 13
+},
+{
+"w": "nayi",
+"s": 157.32,
+"e": 157.6,
+"line": 13
+},
+{
+"w": "khabar",
+"s": 157.6,
+"e": 157.94,
+"line": 13
+},
+{
+"w": "sabse",
+"s": 157.94,
+"e": 158.58,
+"line": 13
+},
+{
+"w": "pehle",
+"s": 158.58,
+"e": 158.9,
+"line": 13
+},
+{
+"w": "aap",
+"s": 158.9,
+"e": 159.36,
+"line": 13
+},
+{
+"w": "tak",
+"s": 159.36,
+"e": 159.46,
+"line": 13
+},
+{
+"w": "pahunche.",
+"s": 159.46,
+"e": 159.88,
+"line": 13
+},
+{
+"w": "Milte",
+"s": 160.2,
+"e": 160.58,
+"line": 13
+},
+{
+"w": "hain",
+"s": 160.58,
+"e": 160.82,
+"line": 13
+},
+{
+"w": "agli",
+"s": 160.82,
+"e": 161.16,
+"line": 13
+},
+{
+"w": "video",
+"s": 161.16,
+"e": 161.42,
+"line": 13
+},
+{
+"w": "mein.",
+"s": 161.42,
+"e": 161.73,
+"line": 13
+},
+{
+"w": "Tab",
+"s": 161.73,
+"e": 162.04,
+"line": 13
+},
+{
+"w": "tak",
+"s": 162.04,
+"e": 162.26,
+"line": 13
+},
+{
+"w": "ke",
+"s": 162.26,
+"e": 162.38,
+"line": 13
+},
+{
+"w": "liye",
+"s": 162.38,
+"e": 162.72,
+"line": 13
+},
+{
+"w": "jude",
+"s": 162.72,
+"e": 163.16,
+"line": 13
+},
+{
+"w": "rahiye",
+"s": 163.16,
+"e": 163.5,
+"line": 13
+},
+{
+"w": "Tech",
+"s": 163.5,
+"e": 163.8,
+"line": 13
+},
+{
+"w": "Khabar",
+"s": 163.8,
+"e": 164.18,
+"line": 13
+},
+{
+"w": "ke",
+"s": 164.18,
+"e": 164.3,
+"line": 13
+},
+{
+"w": "saath.",
+"s": 164.3,
+"e": 164.64,
+"line": 13
+},
+{
+"w": "Jai",
+"s": 164.94,
+"e": 165.28,
+"line": 13
+},
+{
+"w": "Hind.",
+"s": 165.28,
+"e": 165.54,
+"line": 13
+}
+];
+
+const SCENES = [
+  {crumb:"// 00 — INTRO", num:"TECH KHABAR", chip:"—",
+   h:[`Aaj ki <span class="hl" id="hl0">10 badi</span>`, `<i>khabrein</i>`],
+   d:["Tech Khabar · 14 November 2026", "Seedhi aur simple Hinglish mein"],
+   card:{lab:"TECH KHABAR", big:"TOP 10", sub:"aaj ki 10 sabse badi tech khabrein",
+         mini:[{k:"DATE",v:"14 NOV"},{k:"LENGTH",v:"2:46"},{k:"LANG",v:"HINGLISH"}]}},
+
+  {crumb:"// 01 — BULLETIN", num:"AAJ KA BULLETIN", chip:"10",
+   h:[`10 khabrein,`, `<i>ek hi video</i> mein`],
+   d:["Apple se Anthropic tak — sab kuch", "Video ko end tak zaroor dekhna"],
+   card:{lab:"AAJ KA BULLETIN", big:"10", sub:"khabrein · 2 minute 46 second",
+         mini:[{k:"INDIA",v:"14 NOV"},{k:"ITEMS",v:"10"},{k:"LANG",v:"HINGLISH"}]}},
+
+  {crumb:"// 02 — APPLE", num:"ITEM 01", chip:"01",
+   h:[`Apple ka pehla <span class="hl" id="hl2">touchscreen</span>`, `<i>MacBook Pro</i>`],
+   d:["Same chip wale model se $400 mehnga", "Deliveries 6 November se shuru"],
+   card:{lab:"PRICE PREMIUM", big:"$400", sub:"mehnga — same chip wale model se",
+         mini:[{k:"DELIVERY",v:"6 NOV"},{k:"CHIP",v:"M5 PRO"}], foot:"OLED TOUCH DISPLAY", at:/400/}},
+
+  {crumb:"// 03 — GTA6", num:"ITEM 02", chip:"02",
+   h:[`GTA6 <span class="hl" id="hl3">preload</span> shuru,`, `<i>212 GB</i>`],
+   d:["Storage abhi se khaali kar lo", "Launch: 19 November, midnight"],
+   card:{lab:"GAME SIZE", big:"212 GB", sub:"launch: 19 November",
+         mini:[{k:"PRELOAD",v:"10 NOV"},{k:"LAUNCH",v:"19 NOV"}], extra:"bar", foot:"PS5 · XBOX SERIES X|S", at:/212/}},
+
+  {crumb:"// 04 — AMD", num:"ITEM 03", chip:"03",
+   h:[`AMD ke <span class="hl" id="hl4">Q3 results</span>`, `<i>out</i>`],
+   d:["3 November ko official numbers", "Teesre quarter ke results"],
+   card:{lab:"RESULTS", big:"3 NOV", sub:"third quarter — official numbers",
+         mini:[{k:"QUARTER",v:"Q3"},{k:"DATE",v:"3 NOV"}], foot:"AMD", at:/3/}},
+
+  {crumb:"// 05 — SOFTBANK", num:"ITEM 04", chip:"04",
+   h:[`China ne <span class="hl" id="hl5">$5.4B</span> deal`, `<i>roka</i>`],
+   d:["SoftBank ABB Robotics kharidna chahta tha", "ABB ne 5 November ko confirm kiya"],
+   card:{lab:"DEAL BLOCKED", big:"$5.4B", sub:"SoftBank × ABB Robotics",
+         mini:[{k:"CONFIRM",v:"5 NOV"},{k:"BUYER",v:"SOFTBANK"}], extra:"block", foot:"CHINA: SECURITY REVIEW"}},
+
+  {crumb:"// 06 — BLUE ORIGIN", num:"ITEM 05", chip:"05",
+   h:[`New Glenn ki udaan`, `<span class="hl" id="hl6">Jan 2027</span> tak ruki`],
+   d:["Reuters: baat internal memo mein likhi hai", "Agli flight January 2027 se pehle nahi"],
+   card:{lab:"NEXT FLIGHT", big:"JAN 2027", sub:"Blue Origin · New Glenn",
+         mini:[{k:"SOURCE",v:"REUTERS"},{k:"DOC",v:"MEMO"}], foot:"ROCKET: NEW GLENN", at:/2027/}},
+
+  {crumb:"// 07 — AI FRAUD", num:"ITEM 06", chip:"06",
+   h:[`AI se <span class="hl" id="hl7">nakal</span>,`, `<i>$139M</i> ka fraud`],
+   d:["America mein 3 logon par charges", "AI se CEO aur vakil ki nakal"],
+   card:{lab:"ALLEGED FRAUD", big:"$139M", sub:"3 logon par charges",
+         mini:[{k:"STATUS",v:"CHARGES"},{k:"PROOF",v:"NAHI"}], foot:"ABHI SABIT NAHI HUA", at:/139/}},
+
+  {crumb:"// 08 — NITORI", num:"ITEM 07", chip:"07",
+   h:[`Nitori ka <span class="hl" id="hl8">data breach</span>,`, `<i>37M</i> records`],
+   d:["Japan ki furniture company", "Passwords aur card details safe: company"],
+   card:{lab:"DATA BREACH", big:"37M", sub:"customer records chori",
+         mini:[{k:"SAFE",v:"PASSWORDS"},{k:"COUNTRY",v:"JAPAN"}], extra:"shield", at:/37/}},
+
+  {crumb:"// 09 — AI SAFETY", num:"ITEM 08", chip:"08",
+   h:[`Paris mein <span class="hl" id="hl9">AI safety</span>`, `<i>meeting</i>`],
+   d:["9 November · Paris Call for AI Safety", "Voluntary — kisi par bound nahi"],
+   card:{lab:"SUMMIT", big:"~50", sub:"participants",
+         mini:[{k:"DATE",v:"9 NOV"},{k:"TYPE",v:"VOLUNTARY"}], foot:"PARIS CALL FOR AI SAFETY", at:/50/}},
+
+  {crumb:"// 10 — GOOGLE", num:"ITEM 09", chip:"09",
+   h:[`<span class="hl" id="hl10">Gemini 4 Carbon</span>`, `<i>sab ke liye</i>`],
+   d:["10 November se paying developers ke liye", "Pricing official page par check karo"],
+   card:{lab:"API PRICING", big:"$2/$10", sub:"per 1M tokens — intro rate",
+         mini:[{k:"FROM",v:"1 DEC $4/$20"},{k:"DATE",v:"10 NOV"}], foot:"GOOGLE GEMINI API"}},
+
+  {crumb:"// 11 — ANTHROPIC", num:"ITEM 10", chip:"10",
+   h:[`Anthropic ke naye models,`, `<span class="hl" id="hl11">30%</span> <i>tez</i>`],
+   d:["Fable 5.2 aur Mythos 5.2 launch", "Pichle 5.1 se 30% tak tez"],
+   card:{lab:"SPEED-UP", big:"+30%", sub:"Fable 5.2 · Mythos 5.2",
+         mini:[{k:"DATE",v:"9 NOV"},{k:"VS",v:"5.1"}], extra:"speed", at:/30/}},
+
+  {crumb:"// 12 — RECAP", num:"BULLETIN", chip:"—",
+   h:[`Inme se <span class="hl" id="hl12">kaunsi</span>`, `<i>best lagi?</i>`],
+   d:["Comment mein zaroor batana", "Aaj ki poori bulletin — 10 khabrein"],
+   card:{lab:"AAJ KA BULLETIN", big:"10/10", sub:"khabrein — end tak dekha?",
+         mini:[{k:"ITEMS",v:"10"},{k:"TIME",v:"2:46"}], foot:"COMMENT ME BATAO"}},
+
+  {crumb:"// 13 — OUTRO", num:"TECH KHABAR", chip:"—",
+   h:[`<span class="hl" id="hl13">Subscribe</span> karo,`, `<i>bell bhi dabao</i>`],
+   d:["Like karo, dosto ke saath share karo", "Har nayi khabar sabse pehle aap tak"],
+   card:{end:true}},
+];
+
+/* =================== HELPERS =================== */
+const $ = id => document.getElementById(id);
+const clamp = (x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const P = (t,a,d)=>clamp((t-a)/d);
+const eo = x=>1-Math.pow(1-x,3);
+const eio = x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;
+const back = x=>{const c=1.70158*1.1,c3=c+1;return 1+c3*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const lerp=(a,b,x)=>a+(b-a)*x;
+function st(el,o){for(const k in o) el.style[k]=o[k];}
+function head(el,t,a,b){
+  const pi = a<=0?1:P(t,a,.34), po=P(t,b,.22);
+  st(el,{opacity:eo(pi)*(1-po),transform:`translateY(${lerp(44,0,eo(pi))-52*eo(po)}px)`});
+}
+function card(el,t,a,b=1e9){
+  const pi=a<=0?1:P(t,a,.38), po=P(t,b,.3);
+  st(el,{opacity:clamp(pi*2)*(1-eo(po)),transform:`translateY(${lerp(46,0,eo(pi))-150*eio(po)}px) scale(${lerp(.94,1,back(pi))*lerp(1,.86,eio(po))})`});
+}
+function det(el,t,a,b=1e9){
+  const pi = a<=0?1:P(t,a+.28,.36), po=P(t,b,.2);
+  st(el,{opacity:eo(pi)*(1-po),transform:`translateY(${lerp(26,0,eo(pi))}px)`});
+}
+const CHECK=`<svg width="42" height="42" viewBox="0 0 24 24"><path d="M6 12.5l4 4L18 8" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/* =================== SCENE TIMES (from words.json lines) =================== */
+const SC = SCENES.map((_,i)=>{ const w = WORDS.find(w=>w.line===i); return w ? w.s : 0; });
+SC[0]=0;
+const WIPE = {a: SC[13]-.36, m: SC[13], b: SC[13]+.36};
+const BIG = [0, SC[2], SC[3], SC[5], SC[7], SC[8], SC[11], SC[13]];
+const KEYW = /^["“]?(\$?[\d][\d.,]*%?|GB|GTA6?|AI|Apple|Gemini|Anthropic|Nitori|AMD|China|Paris|SoftBank|ABB|Blue|Origin|MacBook|Carbon|Subscribe|Google)["”]?[,!.?]*$/i;
+
+function wt(i, re, frac=.45){
+  const ws = WORDS.filter(w=>w.line===i);
+  const hit = ws.find(w=>re.test(w.w.replace(/[^\w.$%]/g,'')));
+  if(hit) return hit.s;
+  const next = i+1<SC.length ? SC[i+1] : DUR;
+  return SC[i] + frac*(next-SC[i]);
+}
+
+/* =================== BUILD DOM =================== */
+const heads=$('heads'), dets=$('dets'), cards=$('cards');
+SCENES.forEach((s,i)=>{
+  const h=document.createElement('div');
+  h.className='abs head'; h.id='h'+i; h.setAttribute('data-qa-text','');
+  h.innerHTML=s.h.map(l=>`<span class="l">${l}</span>`).join('');
+  heads.appendChild(h);
+
+  const d=document.createElement('div');
+  d.className='abs det'; d.id='d'+i; d.setAttribute('data-qa-text','');
+  d.innerHTML=(s.d||[]).map(l=>`<div class="row">${l}</div>`).join('');
+  dets.appendChild(d);
+
+  const c=document.createElement('div');
+  c.className='abs card'; c.id='c'+i;
+  if(s.card.end){
+    c.style.padding='0';
+    c.innerHTML=`<div id="endcard">
+        <div class="mono">TK</div>
+        <div class="nm">Tech Khabar</div>
+        <div class="tag">TECH NEWS · HINGLISH</div>
+        <div class="ch">Subscribe</div>
+        <div class="cmt">Comment karo <b>“GTA”</b></div></div>`;
+  } else {
+    const k=s.card;
+    c.innerHTML=`<div class="lab">${k.lab}</div>
+      <div class="big">${k.big}</div>
+      <div class="sub">${k.sub}</div>
+      ${k.extra==='bar'?`<div class="bar"><i id="bar${i}"></i></div>`:''}
+      ${k.extra==='speed'?`<div class="speed"><i></i><i></i><i class="on"></i></div>`:''}
+      ${k.extra==='block'?`<div class="stamp" id="stamp${i}">BLOCKED</div>`:''}
+      ${k.extra==='shield'?`<div class="badge" id="badge${i}">${CHECK}</div>`:''}
+      <div class="mini">${(k.mini||[]).map(m=>`<div><div class="k">${m.k}</div><div class="v">${m.v}</div></div>`).join('')}</div>`;
+  }
+  cards.appendChild(c);
+});
+
+/* auto-fit each headline to its 2 lines (no wrap, never collide with the detail block) */
+function fitHeads(){
+  document.querySelectorAll('.head').forEach(h=>{
+    const lines=[...h.querySelectorAll('.l')];
+    for(let fs=96; fs>52; fs-=2){
+      h.style.fontSize=fs+'px';
+      if(lines.every(l=>l.scrollWidth<=h.clientWidth+1)) break;
+    }
+  });
+}
+fitHeads();
+if(document.fonts && document.fonts.ready) document.fonts.ready.then(fitHeads);
+
+for(let i=1;i<SCENES.length;i++){ const d=document.createElement('div'); d.className='tick';
+  d.style.left=((SC[i]/DUR)*1728)+'px'; $('pbar').appendChild(d); }
+
+const chunks=[]; {let cur=[];
+  WORDS.forEach((w,i)=>{cur.push(w); const nx=WORDS[i+1];
+    const brk=!nx || /[,!.?।]$/.test(w.w) || cur.length>=4 || (nx.s-w.e)>.22 || nx.line!==w.line;
+    if(brk){chunks.push(cur);cur=[];}});
+}
+
+/* =================== PER-SCENE FX =================== */
+function chipAt(t,i){
+  const a=SC[i]-.12, out = i+1<SC.length ? SC[i+1]-.2 : DUR;
+  const pi=P(t,a,.4), po=P(t,out,.2), hidden = SCENES[i].chip==='—';
+  st($('chip'),{display:hidden?'none':'block', opacity:hidden?0:clamp(pi*2.2)*(1-eo(po)),
+    transform:`translateY(${lerp(26,0,back(clamp(pi)))}px)`});
+  $('chipn').textContent=SCENES[i].num;
+  $('chipb').textContent=SCENES[i].chip;
+}
+function extras(t,i){
+  const s=SCENES[i].card; if(!s||s.end) return;
+  if(s.extra==='bar'){ const a=wt(i,/212/,.5); st($('bar'+i),{width:(78*eo(P(t,a,.5)))+'%'}); }
+  if(s.extra==='block'){ const a=wt(i,/rok|bada|China/,.26), k=P(t,a,.3);
+    st($('stamp'+i),{opacity:clamp(k*2),transform:`rotate(-7deg) scale(${lerp(1.7,1,back(k))})`}); }
+  if(s.extra==='shield'){ const a=wt(i,/37|records/,.5), k=P(t,a,.34);
+    st($('badge'+i),{opacity:clamp(k*2),transform:`scale(${back(k)})`}); }
+  if(s.extra==='speed'){ const a=wt(i,/30/,.6);
+    document.querySelectorAll('#c'+i+' .speed i').forEach((b,n)=>{ const k=eo(P(t,a+n*.09,.4));
+      b.style.height=(26+n*22+34*k)+'%'; }); }
+  if(s.at){ const el=document.querySelector('#c'+i+' .big'); const a=wt(i,s.at,.35), k=P(t,a,.28);
+    if(el) el.style.transform=`scale(${lerp(1.05,1,eo(k))})`; }
+}
+
+/* =================== WIPE =================== */
+const wctx=$('wipe').getContext('2d');
+function drawWipe(t){
+  wctx.clearRect(0,0,1920,1080);
+  const {a,m,b}=WIPE; if(t<a||t>b) return;
+  const S=112,R=84; wctx.fillStyle='#D97757';
+  for(let y=-S/2;y<1080+S;y+=S) for(let x=-S/2;x<1920+S;x+=S){
+    const d=(x/1920*.45+(1080-y)/1080*.55);
+    let k; if(t<=m){const p=(t-a)/(m-a); k=clamp((p*1.5-d)/.5);} else {const p=(t-m)/(b-m); k=1-clamp((p*1.5-d)/.5);}
+    if(k<=0) continue; wctx.beginPath(); wctx.arc(x,y,R*eio(k),0,Math.PI*2); wctx.fill();
+  }
+}
+
+/* =================== MAIN =================== */
+window.render = function(t){
+  st($('g1'),{left:(-160+Math.sin(t*.3)*70)+'px',top:(420+Math.cos(t*.27)*50)+'px'});
+  st($('g2'),{left:(900+Math.cos(t*.36)*60)+'px',top:(600+Math.sin(t*.3)*60)+'px'});
+
+  let si=0; for(let i=0;i<SC.length;i++) if(t>=SC[i]) si=i;
+  const local=t-SC[si];
+  const pv=x=>0.026*eo(clamp(x/5));
+  const prevEnd = si>0 ? pv(SC[si]-SC[si-1]) : 0;
+  let push = 1.025 + lerp(prevEnd, pv(local), si>0?eio(clamp(local/.35)):1);
+  for(const a of BIG){const x=(t-a)/.42; if(x>0&&x<1) push+=Math.sin(Math.PI*x)*(1-x)*0.028;}
+  st($('world'),{transform:`scale(${push})`});
+
+  $('pfill').style.width=(clamp(t/DUR)*100)+'%';
+  $('crumb').textContent=SCENES[si].crumb;
+  $('ftcount').textContent=String(si+1).padStart(2,'0')+' / 14';
+
+  SCENES.forEach((s,i)=>{
+    const a=SC[i], b = i+1<SC.length ? SC[i+1]-.18 : 1e9;
+    const h=$('h'+i), d=$('d'+i), c=$('c'+i);
+    if(i===13){
+      const on=t>=WIPE.m;
+      st(h,{opacity:on?1:0,transform:`translateY(${on?lerp(40,0,eo(P(t,WIPE.m,.32))):20}px)`});
+      det(d,t,WIPE.m); card(c,t,WIPE.m+.05);
+    } else if(i===12 && t>=WIPE.m){ st(h,{opacity:0}); st(d,{opacity:0}); st(c,{opacity:0}); }
+    else { head(h,t,a,b); det(d,t,a,b); card(c,t,a,b); }
+    const hl=$('hl'+i); if(hl) hl.style.setProperty('--s', eo(P(t,a+.55,.42)));
+  });
+
+  chipAt(t,si);
+  extras(t,si);
+
+  // "comment me likho GTA" sticker — lands on the spoken word, stays till the end
+  const cta=$('cta13'), ta=wt(13,/GTA/,.18), kc=P(t,ta,.34);
+  st(cta,{opacity:clamp(kc*2),transform:`translateY(${lerp(24,0,eo(kc))}px) rotate(${lerp(-6,-2,eo(kc))}deg) scale(${lerp(.7,1,back(kc))})`});
+
+  let ch=null; for(const c of chunks){ if(t>=c[0].s-.06) ch=c; }
+  const capEl=$('capin');
+  if(!ch || t>ch[ch.length-1].e+.35){ capEl.style.opacity=0; }
+  else{
+    capEl.style.opacity=1;
+    const k=P(t,ch[0].s-.06,.18);
+    capEl.style.transform=`translateY(${(1-eo(k))*16}px) scale(${lerp(.9,1,back(k))})`;
+    capEl.innerHTML=ch.map(w=>{const on=t>=w.s; const kw=KEYW.test(w.w)&&on; const sc=on?lerp(1.06,1,eo(P(t,w.s,.16))):1;
+      return `<span class="${on?'on':''}" style="transform:scale(${sc})${kw?';color:#D97757':''}">${w.w}</span>`}).join('');
+  }
+  drawWipe(t);
+};
+window.render(0);
+</script>
+</body></html>

@@ -1,0 +1,12 @@
+{
+  "slug": "tech-khabar-top10",
+  "title": "Top 10 Tech Khabar",
+  "duration": 166.1,
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "handle": "Tech Khabar",
+  "language": "hi",
+  "status": "done",
+  "notes": "16:9 YouTube long-form. duration = last word 165.54 + 0.56. Render with src/render169.py"
+}
